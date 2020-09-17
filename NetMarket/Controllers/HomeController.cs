@@ -18,17 +18,14 @@ namespace NetMarket.Controllers
             _logger = logger;
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
             return View();
         }
 
+        [HttpGet]
         public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        public IActionResult Authorization()
         {
             return View();
         }

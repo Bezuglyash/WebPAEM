@@ -45,35 +45,6 @@ html {
   }
 }
 
-.card {
-    background-color: #87CEFA;
-    font-family: 'Heebo';
-    font-size: 1.5em;
-    color: white;
-    border-radius: 1em;
-    margin: 1em 9em 0 9em;
-    padding: 1em;
-    display: flex;
-    align-items: flex-end;
-    background-size: cover;
-    background-position: center;
-    box-shadow: 0 0 2.40em -1em black;
-    transition: all, var(--transition-time);
-    position: relative;
-    overflow: hidden;
-    text-decoration: none;
-}
-
-.radius {
-    border: 3px solid #FFA07A; /* Параметры рамки */
-    padding: 15px; /* Поля вокруг текста */
-    margin-bottom: 10px; /* Отступ снизу */
-}
-
-input {
-
-}
-
 .border-top {
   border-top: 1px solid #e5e5e5;
 }
