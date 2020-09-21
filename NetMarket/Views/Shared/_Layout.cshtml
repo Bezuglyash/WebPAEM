@@ -7,11 +7,11 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
-<body>
+<body style="background-color: #F0FFFF">
     <header>
         <nav class="navbar nav-menu navbar-expand-sm navbar-light border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="a-brand navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><font color="#1E90FF">ПАЕМ</font></a>
+                <a class="a-brand navbar-brand" asp-area="" asp-controller="Home" asp-action="Phone"><font color="#1E90FF">ПАЕМ</font></a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -19,13 +19,30 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Товары</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Phone">Телефоны</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Заказы</a>
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Cart">Корзина</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Authorization">Войти</a>
+                        @if (User.IsInRole("admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Users">Пользователи</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Warehouse">Склад</a>
+                            </li>
+                        }
+                        <li class="nav-item" style="position: absolute; right: 0; margin-right: 67px">
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <div class="div1 nav-link text-dark" title="Manage">Здравствуйте, @User.Identity.Name!</div>
+                                <a class="div1 nav-link" asp-area="" asp-controller="Account" asp-action="Logout">Выйти</a>
+                            }
+                            else
+                            {
+                                <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Authorization">Войти</a>
+                            }
                         </li>
                     </ul>
                 </div>

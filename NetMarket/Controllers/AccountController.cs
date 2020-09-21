@@ -1,7 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using NetMarket.Models;
 using NetMarket.Repository;
 using NetMarket.ViewModels;
 
@@ -25,18 +30,21 @@ namespace NetMarket.Controllers
         }
 
         [HttpPost]
-        public IActionResult Authorization(EnterViewModel loginViewModel)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Authorization(EnterViewModel loginViewModel)
         {
             _logger.LogInformation(loginViewModel.Login);
             _logger.LogInformation(loginViewModel.Password);
-            if (loginViewModel.Login == "test")
+            User user = _userRepository.CheckData(loginViewModel.Login, Encryption.Encryption.GetHash(loginViewModel.Password));
+            if (user == null)
             {
-                ModelState.AddModelError("Login", "Логин не очень!");
+                ModelState.AddModelError("", "Неправильный логин или пароль!");
             }
 
             if (ModelState.IsValid)
             {
-                return RedirectToAction("Index", "Home");
+                await Authenticate(user);
+                return RedirectToAction("Phone", "Home");
             }
 
             return View(loginViewModel);
@@ -60,10 +68,30 @@ namespace NetMarket.Controllers
             {
                 _userRepository.AddUser(registerViewModel.Login, registerViewModel.Email, Encryption.Encryption.GetHash(registerViewModel.Password), registerViewModel.Name,
                     registerViewModel.Surname, registerViewModel.MiddleName, registerViewModel.PhoneNumber, 2);
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Phone", "Home");
             }
 
             return View(registerViewModel);
+        }
+
+        private async Task Authenticate(User user)
+        {
+            // создаем один claim
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimsIdentity.DefaultNameClaimType, user.Login),
+                new Claim(ClaimsIdentity.DefaultRoleClaimType, user.RoleId == 1 ? "admin" : "user")
+            };
+            // создаем объект ClaimsIdentity
+            ClaimsIdentity id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
+            // установка аутентификационных куки
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
+        }
+
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Phone", "Home");
         }
     }
 }

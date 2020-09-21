@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using NetMarket.Entities;
 using NetMarket.Models;
 
@@ -9,55 +10,18 @@ namespace NetMarket.Repository
     public class UserRepository
     {
         private NetMarketDbContext _netMarketDbContext;
-        private static User _userInput;
 
         public UserRepository(NetMarketDbContext netMarketDbContext)
         {
             _netMarketDbContext = netMarketDbContext;
         }
 
-        public bool IsTrueData(string login, string password)
+        public User CheckData(string login, string password)
         {
             var usersForThisParameters = (from human in _netMarketDbContext.Users
                                           where (human.Login == login || human.Email == login) && (human.Password == password)
                                           select human).ToList();
-            _userInput = usersForThisParameters.Count != 0 ? usersForThisParameters[0] : null;
-            return _userInput != null;
-        }
-
-        public string GetFullName()
-        {
-            return _userInput.Name + " " + _userInput.Surname;
-        }
-
-        public string GetLogin()
-        {
-            return _userInput.Login;
-        }
-
-        public string GetPassword()
-        {
-            return _userInput.Password;
-        }
-
-        public string GetName()
-        {
-            return _userInput.Name;
-        }
-
-        public string GetSurname()
-        {
-            return _userInput.Surname;
-        }
-
-        public string GetNumberPhone()
-        {
-            return _userInput.PhoneNumber;
-        }
-
-        public string GetEmail()
-        {
-            return _userInput.Email;
+            return usersForThisParameters.Count != 0 ? usersForThisParameters[0] : null;
         }
 
         public void AddUser(string login, string email, string password, string name, string surname, string middleName, string numberPhone, int roleId)

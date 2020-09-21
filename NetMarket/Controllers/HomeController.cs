@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NetMarket.Models;
@@ -19,13 +20,26 @@ namespace NetMarket.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public IActionResult Phone()
+        {
+            return View();
+        }
+
+        public IActionResult Cart()
         {
             return View();
         }
 
         [HttpGet]
-        public IActionResult Privacy()
+        [Authorize(Roles = "admin")]
+        public IActionResult Users()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "admin")]
+        public IActionResult Warehouse()
         {
             return View();
         }
