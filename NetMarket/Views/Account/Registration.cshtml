@@ -1,0 +1,110 @@
+﻿@model NetMarket.ViewModels.RegisterViewModel
+@{
+    ViewData["Title"] = "Регистрация";
+}
+<style>
+    .card {
+        background-color: #87CEFA;
+        font-family: 'Heebo';
+        font-size: 1.5em;
+        padding: 3em;
+        display: flex;
+        margin-right: auto;
+        margin-left: auto;
+        align-items: center;
+        background-size: cover;
+        background-position: center;
+        box-shadow: 0 0 2.40em -1em black;
+        transition: all, var(--transition-time);
+        position: relative;
+        overflow: hidden;
+        text-decoration: none;
+        min-width: 167px;
+        max-width: 728px;
+    }
+
+    .radius {
+        border: 3px solid #FFA07A; /* Параметры рамки */
+        padding: 15px; /* Поля вокруг текста */
+        margin-bottom: 10px; /* Отступ снизу */
+    }
+
+    /* Full-width input fields */
+    input[type=text], input[type=password] {
+        width: 100%;
+        padding: 12px 20px;
+        margin: 19px 0;
+        display: inline-block;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+        min-width: 128px;
+    }
+
+    /* Set a style for all buttons */
+    button {
+        background-color: #FFA07A;
+        color: white;
+        padding: 14px 20px;
+        margin: 8px 0;
+        border: none;
+        cursor: none;
+        width: 40%;
+        background-position: right;
+    }
+
+        button:hover {
+            opacity: 0.8;
+        }
+
+    .span-login {
+        font-size: 27px;
+        color: red;
+    }
+
+    .head {
+        color: #2F4F4F;
+        margin-right: 1em;
+        margin-left: 1em;
+        text-align: center;
+        font-size: 28px;
+        font-weight: bolder;
+    }
+    }
+</style>
+
+<body>
+    <form class="card radius" style="border-radius: 9px;" method="post">
+        <text class="head"> @ViewData["Title"] </text>
+
+        <div class="validation" asp-validation-summary="ModelOnly"></div>
+
+        <input type="text" style="border-radius: 9px;" placeholder="Логин" asp-for="Login" required />
+        <span class="span-login" asp-validation-for="Login"> </span>
+
+        <input type="text" style="border-radius: 9px;" placeholder="Email" asp-for="Email" required />
+        <span class="span-login" asp-validation-for="Email"> </span>
+
+        <input type="password" style="border-radius: 9px;" placeholder="Пароль" asp-for="Password" required />
+        <span asp-validation-for="Password"> </span>
+
+        <input type="password" style="border-radius: 9px;" placeholder="Повторите пароль" asp-for="RepeatPassword" required />
+        <span asp-validation-for="RepeatPassword"> </span>
+
+        <input type="text" style="border-radius: 9px;" placeholder="Имя" asp-for="Name" required />
+        <span asp-validation-for="Name"> </span>
+
+        <input type="text" style="border-radius: 9px;" placeholder="Фамилия" asp-for="Surname" required />
+        <span asp-validation-for="Surname"> </span>
+
+        <input type="text" style="border-radius: 9px;" placeholder="Отчество" asp-for="MiddleName" required />
+        <span asp-validation-for="MiddleName"> </span>
+
+        <input type="text" style="border-radius: 9px;" placeholder="Номер телефона" asp-for="PhoneNumber" required />
+        <span asp-validation-for="PhoneNumber"> </span>
+
+        <button class="form_auth_button" style="border-radius: 9px;" type="submit" name="form_auth_submit">Зарегистрироваться</button>
+    </form>
+
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+</body>
