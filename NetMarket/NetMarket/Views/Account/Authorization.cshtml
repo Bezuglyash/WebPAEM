@@ -1,0 +1,101 @@
+﻿@model NetMarket.ViewModels.EnterViewModel
+@{
+    ViewData["Title"] = "Авторизация";
+}
+<style>
+    .card {
+        background-color: #87CEFA;
+        font-family: 'Heebo';
+        font-size: 1.5em;
+        padding: 3em;
+        display: flex;
+        margin-top: 55px;
+        margin-right: auto;
+        margin-left: auto;
+        -ms-align-items: center;
+        -o-align-items: center;
+        -webkit-align-items: center;
+        align-items: center;
+        background-size: cover;
+        background-position: center;
+        box-shadow: 0 0 2.40em -1em black;
+        transition: all, var(--transition-time);
+        position: relative;
+        overflow: hidden;
+        text-decoration: none;
+        min-width: 167px;
+        max-width: 728px;
+    }
+
+    .radius {
+        border: 3px solid #FFA07A; /* Параметры рамки */
+        padding: 15px; /* Поля вокруг текста */
+        margin-bottom: 10px; /* Отступ снизу */
+    }
+
+    /* Full-width input fields */
+    input[type=text], input[type=password] {
+        width: 100%;
+        padding: 12px 20px;
+        margin: 19px 0;
+        display: inline-block;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+        min-width: 128px;
+    }
+
+    /* Set a style for all buttons */
+    button {
+        background-color: #FFA07A;
+        color: white;
+        padding: 14px 20px;
+        margin: 8px 0;
+        border: none;
+        cursor: none;
+        width: 40%;
+        background-position: right;
+    }
+
+    button:hover {
+            opacity: 0.8;
+        }
+
+    .span-login {
+        font-size: 27px;
+        color: red;
+    }
+
+    .head {
+        color: #2F4F4F;
+        margin-right: 1em;
+        margin-left: 1em;
+        text-align: center;
+        font-size: 28px;
+        font-weight: bolder;
+    }
+
+    }
+</style>
+
+<body>
+    <form class="card radius" style="border-radius: 9px" asp-action="Authorization" asp-anti-forgery="true">
+        <text class="head"> @ViewData["Title"] </text>
+
+        <input type="text" style="border-radius: 9px;" placeholder="Логин" asp-for="Login" required />
+        <span class="span-login" asp-validation-for="Login"> </span>
+
+        <input type="password" style="border-radius: 9px;" placeholder="Пароль" asp-for="Password" required />
+        <span asp-validation-for="Password"> </span>
+
+        <button class="form_auth_button" style="border-radius: 9px;" type="submit" name="form_auth_submit">Войти</button>
+
+        <div class="container">
+            <a asp-area="" asp-controller="Account" asp-action="Registration">Зарегистрироваться</a>
+        </div>
+
+        <div class="validation" asp-validation-summary="ModelOnly"></div>
+    </form>
+
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+</body>
