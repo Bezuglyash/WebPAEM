@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
 using NetMarket.Entities;
 using NetMarket.Models;
 
@@ -63,6 +61,20 @@ namespace NetMarket.Repository
             }
 
             return true;
+        }
+
+        public Guid GetUsrId(string login)
+        {
+            return (from human in _netMarketDbContext.Users
+                where human.Login == login
+                select human).ToList()[0].Id;
+        }
+
+        public User GetUser(string login)
+        {
+            return (from human in _netMarketDbContext.Users
+                where human.Login == login
+                select human).ToList()[0];
         }
 
         private void UpdateUserDb(User userRewrite)

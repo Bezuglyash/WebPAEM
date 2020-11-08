@@ -6,7 +6,7 @@ namespace NetMarket.Entities
 {
     public class NetMarketDbContext : DbContext
     {
-        public NetMarketDbContext() {}
+        public NetMarketDbContext() { }
 
         public NetMarketDbContext(DbContextOptions<NetMarketDbContext> options)
             : base(options)
@@ -14,9 +14,16 @@ namespace NetMarket.Entities
             Database.EnsureCreated();
         }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+            => optionsBuilder.UseLazyLoadingProxies();
+
         public DbSet<User> Users { get; set; }
 
         public DbSet<Role> Roles { get; set; }
+
+        public DbSet<Product> Products { get; set; }
+
+        public DbSet<ProductInBasket> ProductsInBasket { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -37,8 +44,8 @@ namespace NetMarket.Entities
             User adminUser = new User
             {
                 Id = Guid.NewGuid(),
-                Login = adminLogin, 
-                Email = adminEmail, 
+                Login = adminLogin,
+                Email = adminEmail,
                 Password = adminPassword,
                 Name = adminName,
                 Surname = adminSurname,

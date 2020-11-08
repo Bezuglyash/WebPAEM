@@ -3,52 +3,102 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - ПАЕМ</title>
+    <title>@ViewData["Title"] | ПАЕМ</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/containerMoreDetailed.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://use.fontawesome.com/24c5113dac.js"></script>
 </head>
-<body style="background-color: #F0FFFF">
+<body style="background-color: #edeef0">
     <header>
-        <nav class="navbar nav-menu navbar-expand-sm navbar-light border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="a-brand navbar-brand" asp-area="" asp-controller="Home" asp-action="Phone"><font color="#1E90FF">ПАЕМ</font></a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Phone">Телефоны</a>
+        <a class="a-brand navbar-brand" asp-area="" asp-controller="Market" asp-action="Phone"><font color="#1E90FF" style="text-decoration: none;">PAEM</font></a>
+        <div class="div-menu">
+            <nav>
+                <ul>
+                    @if (User.IsInRole("admin"))
+                    {
+                        <li>
+                            <a style="text-decoration: none;" asp-area="" asp-controller="Market" asp-action="Users">Сотрудники</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Cart">Корзина</a>
+                        <li>
+                            <a style="text-decoration: none;" asp-area="" asp-controller="Market" asp-action="Warehouse">Товары</a>
                         </li>
-                        @if (User.IsInRole("admin"))
+                    }
+                    else if (User.IsInRole("employee"))
+                    {
+                        <li>
+                            <a style="text-decoration: none;" asp-area="" asp-controller="Market" asp-action="Warehouse">Товары</a>
+                        </li>
+                        <li>
+                            <a style="text-decoration: none;" asp-area="" asp-controller="Market" asp-action="Warehouse">Заказы</a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li>
+                            <a style="text-decoration: none;" asp-area="" asp-controller="Market" asp-action="Phone">Телефоны</a>
+                        </li>
+                        <li>
+                            <a style="text-decoration: none;" asp-area="" asp-controller="Market" asp-action="Cart">
+                                Корзина
+                            </a>
+                            <div class="wrapper">
+                                <div>
+                                    <div class="null">
+                                        <span id="counter" style="visibility: collapse;"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        </div>
+        <div class="div-authorized">
+            <nav>
+                <ul>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        if (User.IsInRole("user")) 
                         {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Users">Пользователи</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Warehouse">Склад</a>
+                            <li class="li-authorized">
+                                <div id="openUserMenu" onclick="OpenUserMenu()" class="div-username"><a href="#" class="username" style="text-decoration: none; color: blue; margin-right: 12px;">@User.Identity.Name</a><img src="~/userMenu.svg" alt="Пользователь" style="color: aqua"></div>
+                                <div class="div-user-menu" style="position: absolute;" id="userMenu">
+                                    <label style="color: blue; font-size: 19px; font-weight: bold; align-self: center;">@User.Identity.Name</label>
+                                    <div class="line"></div>
+                                    <a class="a-navigation"  style="text-decoration: none;" asp-area="" asp-controller="Market" asp-action="Phone">Мои заказы</a>
+                                    <a class="a-navigation"  style="text-decoration: none;" asp-area="" asp-controller="Market" asp-action="Phone">Настройки</a>
+                                    <div class="line"></div>
+                                    <a class="a-exit" style="text-decoration: none;" asp-area="" asp-controller="Account" asp-action="Logout">Выйти</a>
+                                </div>
                             </li>
                         }
-                        <li class="nav-item" style="position: absolute; right: 0; margin-right: 67px">
-                            @if (User.Identity.IsAuthenticated)
-                            {
-                                <div class="div1 nav-link text-dark" title="Manage">Здравствуйте, @User.Identity.Name!</div>
-                                <a class="div1 nav-link" asp-area="" asp-controller="Account" asp-action="Logout">Выйти</a>
-                            }
-                            else
-                            {
-                                <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Authorization">Войти</a>
-                            }
+                        else
+                        {
+                            <li class="li-authorized">
+                                <div id="openUserMenu" onclick="OpenUserMenu()" class="div-username"><a href="#" class="username" style="text-decoration: none; color: blue; margin-right: 12px;">@User.Identity.Name</a><img src="~/userMenu.svg" alt="Пользователь" style="color: aqua"></div>
+                                <div class="div-user-menu" style="position: absolute; height: 128px;" id="userMenu">
+                                    <label style="color: blue; font-size: 19px; font-weight: bold; align-self: center;">@User.Identity.Name</label>
+                                    <div class="line"></div>
+                                    <a class="a-navigation" style="text-decoration: none;" asp-area="" asp-controller="Market" asp-action="Phone">Настройки</a>
+                                    <div class="line"></div>
+                                    <a class="a-exit" style="text-decoration: none;" asp-area="" asp-controller="Account" asp-action="Logout">Выйти</a>
+                                </div>
+                            </li>
+                        }
+                    }
+                    else
+                    {
+                        <li class="li-not-authorized">
+                            <a style="text-decoration: none; color: blue; font-size: 19px; font-weight: normal;" asp-area="" asp-controller="Account" asp-action="Authorization">Войти</a>
                         </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
+                    }
+                </ul>
+            </nav>
+        </div>
     </header>
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
@@ -63,6 +113,276 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        window.onload = init;
+        var buttonAddToBasket;
+        var currentProductId;
+
+        $(function () {
+            document.getElementById('counter').style.visibility = "collapse";
+            if (document.getElementById('userMenu')) {
+                document.getElementById('userMenu').style.visibility = "collapse";
+            }
+        });
+
+        function init() {
+            document.getElementById('counter').innerHTML = "";
+            $.ajax({
+                type: "GET",
+                url: "/Market/GetCountPhonesInBasket",
+                data: {},
+                dataType: "text",
+                success: function(msg) {
+                    if (msg != 0) {
+                        document.getElementById('counter').style.visibility = "visible";
+                        document.getElementById('counter').innerHTML = msg;
+                    } else {
+                        document.getElementById('counter').style.visibility = "collapse";
+                    }
+                },
+                error: function(req, status, error) {
+                    alert(error);
+                }
+            });
+        };
+
+        function OpenUserMenu() {
+            event.preventDefault();
+            var url = $(this).attr('href');
+            window.history.replaceState("object or string", "Title", url);
+            if (document.getElementById('userMenu').style.visibility === "collapse") {
+                document.getElementById('userMenu').style.visibility = "visible";
+            } else {
+                document.getElementById('userMenu').style.visibility = "collapse";
+            };
+        };
+
+        $(document).mouseup(function (e) { // событие клика по веб-документу
+            if (document.getElementById('userMenu') && document.getElementById('userMenu').style.visibility === "visible") {
+                var divMenu = $("#userMenu"); // тут указываем ID элемента
+                var divA = $("#openUserMenu");
+                if (!divMenu.is(e.target) && !divA.is(e.target) && divMenu.has(e.target).length === 0 && divA.has(e.target).length === 0) { // и не по его дочерним элементам
+                    document.getElementById('userMenu').style.visibility = "collapse"; // скрываем его
+                }
+            }
+            if (document.getElementById('moreDetailed')) {
+                var divMoreDetailed = $("#moreDetailed");
+                if (!divMoreDetailed.is(e.target) && divMoreDetailed.has(e.target).length === 0) { // и не по его дочерним элементам
+                    $("#button").detach();
+                    $("#moreDetailed").detach();
+                    if (document.getElementById("phoneList")) {
+                        document.getElementById("phoneList").style.opacity = 1;
+                    }
+                    else {
+                        document.getElementById("cartList").style.opacity = 1;
+                    }
+                }
+            }
+        });
+
+        function MoreDetailedClick(productId) {
+            event.preventDefault();
+            var url = $(this).attr('href');
+            window.history.replaceState("object or string", "Title", url);
+            $.ajax({
+                type: "POST",
+                url: "/Market/GetMoreDetailed",
+                data: { productId },
+                success: function (product) {
+                    if (document.getElementById("phoneList")) {
+                        document.getElementById("phoneList").style.opacity = 0.28;
+                    }
+                    else {
+                        document.getElementById("cartList").style.opacity = 0.28;
+                    }
+
+                    var divMain = document.createElement("div");
+                    divMain.id = "moreDetailed";
+                    divMain.className = "div-more-container";
+
+                    var body;
+                    if (document.getElementById("phoneList")) {
+                        body = document.getElementById("phoneList");
+                    }
+                    else {
+                        body = document.getElementById("cartList");
+                    }
+                    body.before(divMain, document.body);
+
+                    var name = document.createElement("p");
+                    name.id = "Name";
+                    name.innerText = product['name'];
+                    divMain.appendChild(name);
+
+                    var divImg = document.createElement("div");
+                    divImg.className = "div-img-more";
+                    divMain.appendChild(divImg);
+
+                    var img = document.createElement("img");
+                    img.className = "img-more-detailed";
+                    img.src = `/${product['imageString']}`;
+                    divImg.appendChild(img);
+
+                    var divSpecifications = document.createElement("div");
+                    divSpecifications.className = "div-specifications";
+
+                    divMain.appendChild(divImg);
+                    divMain.appendChild(divSpecifications);
+
+
+
+                    var divDescription = document.createElement("div");
+                    divDescription.id = "divDescription";
+                    divSpecifications.appendChild(divDescription);
+
+                    var pDescription = document.createElement("p");
+                    pDescription.id = "descriptionHeader";
+                    pDescription.innerText = "Описание";
+                    divDescription.appendChild(pDescription);
+
+                    var description = document.createElement("p");
+                    description.id = "descriptionText";
+                    description.innerText = product['description'];
+                    divDescription.appendChild(description);
+
+
+
+                    var data = document.createElement("p");
+                    data.id = "data";
+                    data.innerText = "Характеристики товара";
+                    divSpecifications.appendChild(data);
+
+
+
+                    var divCompany = document.createElement("div");
+                    divCompany.id = "divCompany";
+                    divSpecifications.appendChild(divCompany);
+
+                    var pCompany = document.createElement("p");
+                    pCompany.id = "companyHeader";
+                    pCompany.innerText = "Производитель";
+                    divCompany.appendChild(pCompany);
+
+                    var company = document.createElement("p");
+                    company.id = "companyText";
+                    company.innerText = product['company'];
+                    divCompany.appendChild(company);
+
+
+
+                    var divStorageCard = document.createElement("div");
+                    divStorageCard.id = "divStorageCard";
+                    divSpecifications.appendChild(divStorageCard);
+
+                    var pStorageCard = document.createElement("p");
+                    pStorageCard.id = "storageCardHeader";
+                    pStorageCard.innerText = "Карта памяти";
+                    divStorageCard.appendChild(pStorageCard);
+
+                    var storageCard = document.createElement("p");
+                    storageCard.id = "storageCardText";
+                    storageCard.innerText = product['storageCard'];
+                    divStorageCard.appendChild(storageCard);
+
+
+
+                    var divColor = document.createElement("div");
+                    divColor.id = "divColor";
+                    divSpecifications.appendChild(divColor);
+
+                    var pColor = document.createElement("p");
+                    pColor.id = "colorHeader";
+                    pColor.innerText = "Цвет";
+                    divColor.appendChild(pColor);
+
+                    var color = document.createElement("p");
+                    color.id = "colorText";
+                    color.innerText = product['color'];
+                    divColor.appendChild(color);
+
+
+
+                    var divOperationSystem = document.createElement("div");
+                    divOperationSystem.id = "divOperationSystem";
+                    divSpecifications.appendChild(divOperationSystem);
+
+                    var pOperationSystem = document.createElement("p");
+                    pOperationSystem.id = "operationSystemHeader";
+                    pOperationSystem.innerText = "ОС";
+                    divOperationSystem.appendChild(pOperationSystem);
+
+                    var operationSystem = document.createElement("p");
+                    operationSystem.id = "operationSystemText";
+                    operationSystem.innerText = product['operationSystem'];
+                    divOperationSystem.appendChild(operationSystem);
+
+
+
+                    var divWeight = document.createElement("div");
+                    divWeight.id = "divWeight";
+                    divSpecifications.appendChild(divWeight);
+
+                    var pWeight = document.createElement("p");
+                    pWeight.id = "weightHeader";
+                    pWeight.innerText = "Вес";
+                    divWeight.appendChild(pWeight);
+
+                    var weight = document.createElement("p");
+                    weight.id = "weightText";
+                    weight.innerText = product['weight'];
+                    divWeight.appendChild(weight);
+
+
+
+                    var divPriceButton = document.createElement("div");
+                    divPriceButton.id = "divPriceButton";
+                    divSpecifications.appendChild(divPriceButton);
+
+                    var price = document.createElement("p");
+                    price.id = "priceText";
+                    price.innerText = product['price'] + " ₽";
+                    divPriceButton.appendChild(price);
+
+                    if (document.getElementById("phoneList")) {
+                        if (buttonAddToBasket == null) {
+                            buttonAddToBasket = document.createElement("button");
+                            buttonAddToBasket.id = "button";
+                            buttonAddToBasket.innerText = "В корзину";
+                        }
+                        currentProductId = product['id'];
+                        divPriceButton.appendChild(buttonAddToBasket);
+                    }
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+        };
+
+        function AddToBasketClick(productId) {
+            $.ajax({
+                type: "POST",
+                url: "/Market/AddToBasket",
+                data: { productId },
+                dataType: "text",
+                success: function(msg) {
+                    if (document.getElementById('counter').innerHTML === "") {
+                        document.getElementById('counter').style.visibility = "visible";
+                        document.getElementById('counter').innerHTML = 1;
+                    } else {
+                        document.getElementById('counter').innerHTML++;
+                    }
+                },
+                error: function(req, status, error) {
+                    alert(error);
+                }
+            });
+        };
+
+        $(document).on('click', "#button", function (e) {
+            AddToBasketClick(currentProductId);
+        });
+    </script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>
