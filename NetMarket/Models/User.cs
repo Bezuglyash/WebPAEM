@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace NetMarket.Models
 {
@@ -22,6 +23,13 @@ namespace NetMarket.Models
 
         public int RoleId { get; set; }
 
-        public Role Role { get; set; }
+        public virtual Role Role { get; set; }
+
+        public virtual ICollection<ProductInBasket> ProductsInBasket { get; set; }
+
+        public User()
+        {
+            ProductsInBasket = new List<ProductInBasket>();
+        }
     }
 }

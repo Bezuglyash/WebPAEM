@@ -1,0 +1,75 @@
+﻿@model NetMarket.ViewModels.OrderRegistrationViewModel
+@{
+    ViewData["Title"] = "Оформление заказа";
+}
+<head>
+    <link rel="stylesheet" href="~/css/orderRegistration.css"/>
+</head>
+<body class="body-orderRegistration">
+    <form class="card radius" style="border-radius: 9px" method="post">
+        <text class="head"> @ViewData["Title"] </text>
+
+        <div class="validation" asp-validation-summary="ModelOnly">
+            <ul>
+                <li></li>
+            </ul>
+        </div>
+
+        <span class="span-order" asp-validation-for="Name"> </span>
+        <input id="name" type="text" style="border-radius: 9px;" placeholder="Имя" asp-for="Name" required />
+
+        <span class="span-order" asp-validation-for="Surname"> </span>
+        <input id="surname" type="text" style="border-radius: 9px;" placeholder="Фамилия" asp-for="Surname" required />
+
+        <span class="span-order" asp-validation-for="MiddleName"> </span>
+        <input id="middleName" type="text" style="border-radius: 9px;" placeholder="Отчество" asp-for="MiddleName" required />
+
+        <span class="span-order" asp-validation-for="Email"> </span>
+        <input id="email" type="text" style="border-radius: 9px;" placeholder="Email" asp-for="Email" required />
+
+        <span class="span-order" asp-validation-for="PhoneNumber"> </span>
+        <input id="phoneNumber" type="text" style="border-radius: 9px;" placeholder="Номер телефона" asp-for="PhoneNumber" required="" />
+
+        <span class="span-order" asp-validation-for="Address"> </span>
+        <input type="text" style="border-radius: 9px;" placeholder="Адрес доставки" asp-for="Address" required />
+
+        <textarea asp-for="Comment" class="textComment" maxlength="128" rows="5" type="text" placeholder="Комментарий"></textarea>
+
+        <div class="div-orderCheck">
+            <p class="textOrder">К оплате: </p>
+            <p class="sum">@ViewBag.Sum ₽</p>
+        </div>
+
+        <button class="form_auth_button" style="border-radius: 9px;" type="submit" name="form_auth_submit">Подтвердить заказ</button>
+    </form>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        window.onload = init;
+
+        $(function() {
+            //alert("Топчик!");
+            $.ajax({
+                type: "GET",
+                url: "/Market/GetUserData",
+                success: function (userData) {
+                    //alert(userData.toString());
+                    $('#name').val(userData['name']);
+                    $('#surname').val(userData['surname']);
+                    $('#middleName').val(userData['middleName']);
+                    $('#email').val(userData['email']);
+                    $('#phoneNumber').val(userData['phoneNumber']);
+                },
+                error: function (req, status, error) {
+                    //alert(error);
+                }
+            });
+        });
+
+        function init() {
+            alert("Топчик!");
+        };
+    </script>
+</body>

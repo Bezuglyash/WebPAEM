@@ -2,10 +2,24 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>cdfdd34a-0deb-4fdf-b58d-44ed6f06fd5a</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.8" />
+    <None Include="wwwroot\GalaxyM21Black.png" />
+    <None Include="wwwroot\GalaxyM21Blue.png" />
+    <None Include="wwwroot\GalaxyZFold2Black.png" />
+    <None Include="wwwroot\Honor10LiteBlack.png" />
+    <None Include="wwwroot\Honor10LiteBlue.png" />
+    <None Include="wwwroot\Honor30ProPlusGreen.png" />
+    <None Include="wwwroot\iPhoneGold7.png" />
+    <None Include="wwwroot\iPhoneWhite11.png" />
+    <None Include="wwwroot\iPhoneYellow11.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="3.1.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.9" />
   </ItemGroup>
 
 </Project>

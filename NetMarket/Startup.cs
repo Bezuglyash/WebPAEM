@@ -1,18 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NetMarket.Entities;
-using NetMarket.Models;
 using NetMarket.Repository;
 
 namespace NetMarket
@@ -33,15 +26,12 @@ namespace NetMarket
             // добавляем контекст MobileContext в качестве сервиса в приложение
             services.AddDbContext<NetMarketDbContext>(options => options.UseSqlServer(connection));
 
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
-                {
-                    options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Authorization");
-                    options.AccessDeniedPath = new Microsoft.AspNetCore.Http.PathString("/Account/Authorization");
-                });
-
-            //services.AddIdentity<User, Role>().AddSignInManager<NetMarketDbContext>();
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
 
             services.AddTransient<UserRepository>();
+            services.AddTransient<ProductRepository>();
+            services.AddTransient<ProductInBasketRepository>();
+            services.AddTransient<OrderRepository>();
 
             services.AddMvc();
             services.AddControllersWithViews();
@@ -56,7 +46,7 @@ namespace NetMarket
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Market/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
@@ -72,7 +62,7 @@ namespace NetMarket
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Account}/{action=Authorization}/{id?}");
+                    pattern: "{controller=Market}/{action=Phone}/{id?}");
             });
         }
     }

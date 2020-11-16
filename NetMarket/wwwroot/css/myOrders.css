@@ -1,0 +1,325 @@
+﻿.ul-orderCard {
+    position: relative;
+    list-style: none;
+    padding: 0;
+}
+
+.li-orderCard {
+    position: relative;
+    display: block;
+    border-radius: 9px;
+    background: white;
+    margin-bottom: 28px;
+}
+
+.myOrderCard {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    border-radius: 9px;
+    background: white;
+    box-shadow: 5px 5px 7px #FFA07A;
+    padding: 5px 28px;
+    margin: 0;
+}
+
+.orderData {
+    align-self: stretch;
+    display: grid;
+    grid-template-areas: "numberOrder numberOrder" 
+                         "fullNameRow fullName" 
+                         "sumRow sum"
+                         "addressRow address" 
+                         "statusRow status"
+                         "dateRow date"
+                         "commentRow comment"
+                         "rowButton rowButton";
+    grid-template-rows: 67px 67px 67px 67px 67px 67px auto 67px;
+    grid-template-columns: 40% 60%;
+    grid-row-gap: 3px;
+    grid-column-gap: 3px;
+    padding: 0;
+}
+
+#numberOrder {
+    grid-area: numberOrder;
+    color: #2F4F4F;
+    font-size: 27px;
+    font-family: cursive;
+    font-weight: bolder;
+}
+
+#fullNameRow {
+    grid-area: fullNameRow;
+    color: #2F4F4F;
+    font-size: 19px;
+    font-family: cursive;
+    font-weight: bolder;
+}
+
+#fullName {
+    grid-area: fullName;
+    font-size: 19px;
+    text-align: center;
+    font-weight: bolder;
+    color: mediumslateblue;
+}
+
+#addressRow {
+    grid-area: addressRow;
+    color: #2F4F4F;
+    font-size: 19px;
+    font-family: cursive;
+    font-weight: bolder;
+}
+
+#address {
+    grid-area: address;
+    font-size: 19px;
+    text-align: center;
+    font-weight: bolder;
+    color: mediumslateblue;
+}
+
+#dateRow {
+    grid-area: dateRow;
+    color: #2F4F4F;
+    font-size: 19px;
+    font-family: cursive;
+    font-weight: bolder;
+}
+
+#date {
+    grid-area: date;
+    font-size: 19px;
+    text-align: center;
+    font-weight: bolder;
+    color: mediumslateblue;
+}
+
+#sumRow {
+    grid-area: sumRow;
+    color: #2F4F4F;
+    font-size: 19px;
+    font-family: cursive;
+    font-weight: bolder;
+}
+
+#sum {
+    grid-area: sum;
+    font-size: 19px;
+    text-align: center;
+    font-weight: bolder;
+    color: mediumslateblue;
+}
+
+#statusRow {
+    grid-area: statusRow;
+    color: #2F4F4F;
+    font-size: 19px;
+    font-family: cursive;
+    font-weight: bolder;
+}
+
+#status {
+    grid-area: status;
+    font-size: 19px;
+    text-align: center;
+    font-weight: bolder;
+    color: mediumslateblue;
+}
+
+#commentRow {
+    grid-area: commentRow;
+    color: #2F4F4F;
+    font-size: 19px;
+    font-family: cursive;
+    font-weight: bolder;
+}
+
+#comment {
+    grid-area: comment;
+    font-size: 19px;
+    text-align: justify;
+    font-weight: bolder;
+    color: mediumslateblue;
+    word-wrap: break-word;
+}
+
+#rowButton {
+    grid-area: rowButton;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.toggleButton, .paymentButton {
+    width: 167px;
+    font-size: 19px;
+    text-align: center;
+    color: white;
+    border: none;
+    outline: none;
+    padding: 5px 12px;
+    border-radius: 5px;
+}
+
+.toggleButton {
+    background: mediumslateblue;
+    margin-right: 5px;
+}
+
+.paymentButton {
+    background: #32CD32;
+    margin-left: 5px;
+}
+
+.toggleButton:hover, .paymentButton:hover {
+    opacity: 0.67;
+}
+
+.orderPhones {
+    width: 100%;
+}
+
+.ul-products {
+    list-style: none;
+    padding: 0;
+}
+
+.li-product {
+    display: block;
+    border-radius: 9px;
+    background: white;
+    margin-bottom: 9px;
+}
+
+.div-data {
+    display: flex;
+    justify-content: space-around;
+}
+
+.div-img {
+    width: 30%;
+    position: relative;
+    padding-bottom: 28%;
+    overflow: hidden;
+}
+
+.div-img img {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 80%;
+    max-height: 80%;
+    margin: auto;
+    transition: transform .4s ease-out;
+}
+
+.div-specification {
+    width: 55%;
+    align-self: center;
+    display: grid;
+}
+
+.a-name {
+    width: 228px;
+    font-size: 27px;
+    font-weight: bolder;
+}
+
+.a-name:hover {
+    color: coral;
+}
+
+.price {
+    font-size: 27px;
+    color: black;
+}
+
+.div-button {
+    width: 15%;
+    align-self: center;
+}
+
+#addToBasket {
+    position: relative;
+    cursor: pointer;
+    opacity: 0.28;
+    color: mediumslateblue;
+    font-size: 55px;
+}
+
+#addToBasket:hover {
+    opacity: 1;
+}
+
+@media screen and (max-width: 767px) {
+    #numberOrder {
+        font-size: 19px;
+    }
+
+    #fullNameRow {
+        font-size: 16px;
+    }
+
+    #fullName {
+        font-size: 16px;
+    }
+
+    #addressRow {
+        font-size: 16px;
+    }
+
+    #address {
+        font-size: 16px;
+    }
+
+    #dateRow {
+        font-size: 16px;
+    }
+
+    #date {
+        font-size: 16px;
+    }
+
+    #sumRow {
+        font-size: 16px;
+    }
+
+    #sum {
+        font-size: 16px;
+    }
+
+    #statusRow {
+        font-size: 16px;
+    }
+
+    #status {
+        font-size: 16px;
+    }
+
+    #commentRow {
+        font-size: 16px;
+    }
+
+    #comment {
+        font-size: 16px;
+    }
+
+    .toggleButton, .paymentButton {
+        font-size: 16px;
+    }
+
+    .a-name {
+        font-size: 19px;
+    }
+
+    .price {
+        font-size: 19px;
+    }
+}

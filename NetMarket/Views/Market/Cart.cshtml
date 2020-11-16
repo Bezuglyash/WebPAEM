@@ -1,0 +1,131 @@
+﻿@model IEnumerable<NetMarket.ViewModels.ProductInBasketViewModel>
+@{
+    ViewData["Title"] = "Корзина";
+}
+<head>
+    <link rel="stylesheet" href="~/css/cart.css" />
+</head>
+<body id="cartList" class="body-cart">
+    @if (Model.Distinct().ToList().Count != 0)
+    {
+        <div id="list" class="div-container-cart">
+            <h3 class="h3">Корзина</h3>
+            <ul id="basketList" class="ul-container-cart">
+                @foreach (var item in Model)
+                {
+                    <li id="@item.Id" class="li-container-cart">
+                        <div id="data" class="div-data">
+                            <div class="div-img">
+                                <img src="~/@item.ImageString" alt="" />
+                            </div>
+                            <div id="specification" class="div-specification">
+                                <a class="a-name a1" href="#" style="text-decoration: none;" onclick="MoreDetailedClick(@item.ProductId)">@item.Name</a>
+                                <p id="price" class="price">@item.Price ₽</p>
+                            </div>
+                            <div class="div-button"><a id="deleteFromBasket" value="@item.Id" onclick="DeleteFromBasketClick(@item.Id)"></a></div>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </div>
+        <div id="orderCard" class="div-orderCard">
+            <div class="div-orderSum">
+                <p class="orderText">Итого</p>
+                <p id="sum" class="orderSum">@Model.Sum(m => m.Price) ₽</p>
+            </div>
+            <div>
+                <form>
+                    <button style="outline: none;" class="orderButton" type="submit" asp-area="" asp-controller="Market" asp-action="OrderRegistration">ОФОРМИТЬ ЗАКАЗ</button>
+                </form>
+            </div>
+            <div class="div-orderDescription">
+                <span class="refund">
+                    <i class="fa fa-repeat fa-lg"></i>
+                    <br>
+                    28 дней
+                    <br>
+                    на возврат
+                    <br>
+                    товара
+                </span>
+                <span class="identity">
+                    <i class="fa fa-check fa-lg"></i>
+                    <br>
+                    Гарантия
+                    <br>
+                    подлинности
+                </span>
+            </div>
+        </div>
+        <div id="zeroBasket" style="display: none; margin: 0; width: 100%;">
+            <p style="font-size: 40px; color: mediumslateblue; text-align: center;">Корзина пуста!</p>
+        </div>
+    }
+    else
+    {
+        <div style="margin: 0; width: 100%;">
+            <p style="font-size: 40px; color: mediumslateblue; text-align: center;">Корзина пуста!</p>
+        </div>
+    }
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        window.onload = init;
+
+        $(function () {
+            //alert("Топчик!");
+        });
+
+        function init() {
+            //alert("Топчик!");
+        };
+
+        function DeleteFromBasketClick(idInBasket) {
+            $("#" + idInBasket).remove();
+            $.ajax({
+                type: "POST",
+                url: "/Market/DeleteFromBasket",
+                data: { idInBasket },
+                dataType: "text",
+                success: function (msg) {
+                    document.getElementById('counter').innerHTML--;
+                    if (document.getElementById('counter').innerHTML == 0) {
+                        document.getElementById('counter').innerHTML = "";
+                        document.getElementById('counter').style.visibility = "collapse";
+                        document.getElementById('list').style.display = "none";
+                        document.getElementById('orderCard').style.display = "none";
+                        document.getElementById('zeroBasket').style.display = "block";
+                    }
+                    var elementsLi = $("#basketList").find('li');
+                    var length = elementsLi.length;
+                    var sum = 0;
+                    elementsLi.each(function () {
+                        sum += parseInt($(this).find('#price').text().split(" ₽")[0]);
+                    });
+                    /*for (var i = 0; i <= length; ++i) {
+                        alert($(elementsLi[i]).find("#price").innerHTML.toString());
+                        sum += $(elementsLi[i]).children('.div-data').children('.div-specification').find('.price').innerText.split("₽")[0];
+                        //alert($(elementsLi[i]).children('.div-data').children('.div-specification').find('.price').innerText.toString().split("₽")[0]);
+                    }*/
+                    $({ numberValue: document.getElementById('sum').innerHTML.split(" ₽")[0] }).animate({ numberValue: sum }, {
+
+                        duration: 528, // Продолжительность анимации, где 500 = 0,5 одной секунды, то есть 500 миллисекунд
+                        easing: "swing",
+
+                        step: function (val) {
+
+                            $("#sum").html(Math.ceil(val) + " ₽"); // Блок, где необходимо сделать анимацию
+
+                        }
+
+                    });
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+        };
+    </script>
+</body>

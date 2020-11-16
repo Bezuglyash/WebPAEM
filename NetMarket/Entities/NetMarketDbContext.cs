@@ -6,7 +6,7 @@ namespace NetMarket.Entities
 {
     public class NetMarketDbContext : DbContext
     {
-        public NetMarketDbContext() {}
+        public NetMarketDbContext() { }
 
         public NetMarketDbContext(DbContextOptions<NetMarketDbContext> options)
             : base(options)
@@ -14,14 +14,30 @@ namespace NetMarket.Entities
             Database.EnsureCreated();
         }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+            => optionsBuilder.UseLazyLoadingProxies();
+
         public DbSet<User> Users { get; set; }
 
         public DbSet<Role> Roles { get; set; }
+
+        public DbSet<Product> Products { get; set; }
+
+        public DbSet<ProductInBasket> ProductsInBasket { get; set; }
+
+        public DbSet<Order> Orders { get; set; }
+
+        public DbSet<OrderProduct> OrderProducts { get; set; }
+
+        public DbSet<OrderStatus> OrdersStatus { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             string adminRoleName = "admin";
             string userRoleName = "user";
+
+            Role adminRole = new Role { Id = 1, Name = adminRoleName };
+            Role userRole = new Role { Id = 2, Name = userRoleName };
 
             string adminLogin = "MAXon28";
             string adminEmail = "max.ronald9@gmail.com";
@@ -31,14 +47,11 @@ namespace NetMarket.Entities
             string adminMiddleName = "Викторович";
             string adminPhoneNumber = "89162185817";
 
-            Role adminRole = new Role { Id = 1, Name = adminRoleName };
-            Role userRole = new Role { Id = 2, Name = userRoleName };
-
             User adminUser = new User
             {
                 Id = Guid.NewGuid(),
-                Login = adminLogin, 
-                Email = adminEmail, 
+                Login = adminLogin,
+                Email = adminEmail,
                 Password = adminPassword,
                 Name = adminName,
                 Surname = adminSurname,
@@ -47,8 +60,14 @@ namespace NetMarket.Entities
                 RoleId = adminRole.Id
             };
 
-            modelBuilder.Entity<Role>().HasData(new Role[] { adminRole, userRole });
+            OrderStatus firstStatus = new OrderStatus { Id = 1, Status = "Заказ обрабатывается."};
+            OrderStatus secondStatus = new OrderStatus { Id = 2, Status = "Заказ принят. Производится доставка." };
+            OrderStatus thirdStatus = new OrderStatus { Id = 3, Status = "Заказ доставлен. Ожидается оплата!" };
+            OrderStatus fourthStatus = new OrderStatus { Id = 4, Status = "Оплачено!" };
+
             modelBuilder.Entity<User>().HasData(new User[] { adminUser });
+            modelBuilder.Entity<Role>().HasData(new Role[] { adminRole, userRole });
+            modelBuilder.Entity<OrderStatus>().HasData(new OrderStatus[] { firstStatus, secondStatus, thirdStatus, fourthStatus });
             base.OnModelCreating(modelBuilder);
         }
     }
