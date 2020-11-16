@@ -1,16 +1,12 @@
-using System;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NetMarket.Entities;
-using NetMarket.Models;
 using NetMarket.Repository;
-using NetMarket.ViewModels;
 
 namespace NetMarket
 {
@@ -35,8 +31,7 @@ namespace NetMarket
             services.AddTransient<UserRepository>();
             services.AddTransient<ProductRepository>();
             services.AddTransient<ProductInBasketRepository>();
-
-            services.AddSingleton<ProductViewModel>();
+            services.AddTransient<OrderRepository>();
 
             services.AddMvc();
             services.AddControllersWithViews();

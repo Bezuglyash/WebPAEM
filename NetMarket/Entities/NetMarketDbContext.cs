@@ -25,10 +25,19 @@ namespace NetMarket.Entities
 
         public DbSet<ProductInBasket> ProductsInBasket { get; set; }
 
+        public DbSet<Order> Orders { get; set; }
+
+        public DbSet<OrderProduct> OrderProducts { get; set; }
+
+        public DbSet<OrderStatus> OrdersStatus { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             string adminRoleName = "admin";
             string userRoleName = "user";
+
+            Role adminRole = new Role { Id = 1, Name = adminRoleName };
+            Role userRole = new Role { Id = 2, Name = userRoleName };
 
             string adminLogin = "MAXon28";
             string adminEmail = "max.ronald9@gmail.com";
@@ -37,9 +46,6 @@ namespace NetMarket.Entities
             string adminSurname = "Безуглый";
             string adminMiddleName = "Викторович";
             string adminPhoneNumber = "89162185817";
-
-            Role adminRole = new Role { Id = 1, Name = adminRoleName };
-            Role userRole = new Role { Id = 2, Name = userRoleName };
 
             User adminUser = new User
             {
@@ -54,8 +60,14 @@ namespace NetMarket.Entities
                 RoleId = adminRole.Id
             };
 
-            modelBuilder.Entity<Role>().HasData(new Role[] { adminRole, userRole });
+            OrderStatus firstStatus = new OrderStatus { Id = 1, Status = "Заказ обрабатывается."};
+            OrderStatus secondStatus = new OrderStatus { Id = 2, Status = "Заказ принят. Производится доставка." };
+            OrderStatus thirdStatus = new OrderStatus { Id = 3, Status = "Заказ доставлен. Ожидается оплата!" };
+            OrderStatus fourthStatus = new OrderStatus { Id = 4, Status = "Оплачено!" };
+
             modelBuilder.Entity<User>().HasData(new User[] { adminUser });
+            modelBuilder.Entity<Role>().HasData(new Role[] { adminRole, userRole });
+            modelBuilder.Entity<OrderStatus>().HasData(new OrderStatus[] { firstStatus, secondStatus, thirdStatus, fourthStatus });
             base.OnModelCreating(modelBuilder);
         }
     }

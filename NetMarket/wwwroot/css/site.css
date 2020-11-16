@@ -264,13 +264,17 @@ body {
 }
 
 /* Body margin */
-.body-auth, .body-registration, .body-orderRegistration {
+.body-auth, .body-registration, .body-orderRegistration{
     margin-top: 109px;
 }
 
-.body-phone, .body-cart {
+.body-phone, .body-cart, .body-orderComplete {
     margin-top: 67px;
     opacity: 1;
+}
+
+.body-myOrders {
+    margin-top: 94px;
 }
 
 @media screen and (max-width: 755px) {
@@ -342,11 +346,11 @@ body {
         right: 165px;
     }
 
-    .body-auth, .body-registration, .body-orderRegistration {
+    .body-auth, .body-registration, .body-orderRegistration, .body-myOrders {
         margin-top: 240px;
     }
 
-    .body-phone, .body-cart {
+    .body-phone, .body-cart, .body-orderComplete {
         margin-top: 219px;
     }
 }

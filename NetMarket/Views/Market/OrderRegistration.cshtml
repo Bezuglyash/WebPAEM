@@ -1,9 +1,9 @@
-﻿@model NetMarket.ViewModels.Order.OrderRegistrationViewModel
+﻿@model NetMarket.ViewModels.OrderRegistrationViewModel
 @{
     ViewData["Title"] = "Оформление заказа";
 }
 <head>
-    <link rel="stylesheet" href="~/css/orderRegistration.css" />
+    <link rel="stylesheet" href="~/css/orderRegistration.css"/>
 </head>
 <body class="body-orderRegistration">
     <form class="card radius" style="border-radius: 9px" method="post">
@@ -15,29 +15,29 @@
             </ul>
         </div>
 
-        <span class="span-login" asp-validation-for="Name"> </span>
+        <span class="span-order" asp-validation-for="Name"> </span>
         <input id="name" type="text" style="border-radius: 9px;" placeholder="Имя" asp-for="Name" required />
 
-        <span class="span-login" asp-validation-for="Surname"> </span>
+        <span class="span-order" asp-validation-for="Surname"> </span>
         <input id="surname" type="text" style="border-radius: 9px;" placeholder="Фамилия" asp-for="Surname" required />
 
-        <span class="span-login" asp-validation-for="MiddleName"> </span>
+        <span class="span-order" asp-validation-for="MiddleName"> </span>
         <input id="middleName" type="text" style="border-radius: 9px;" placeholder="Отчество" asp-for="MiddleName" required />
 
-        <span class="span-login" asp-validation-for="Email"> </span>
+        <span class="span-order" asp-validation-for="Email"> </span>
         <input id="email" type="text" style="border-radius: 9px;" placeholder="Email" asp-for="Email" required />
 
-        <span class="span-login" asp-validation-for="PhoneNumber"> </span>
+        <span class="span-order" asp-validation-for="PhoneNumber"> </span>
         <input id="phoneNumber" type="text" style="border-radius: 9px;" placeholder="Номер телефона" asp-for="PhoneNumber" required="" />
 
-        <span class="span-login" asp-validation-for="Address"> </span>
+        <span class="span-order" asp-validation-for="Address"> </span>
         <input type="text" style="border-radius: 9px;" placeholder="Адрес доставки" asp-for="Address" required />
 
-        <input type="text" style="border-radius: 9px;" placeholder="Комментарий" asp-for="Description" />
+        <textarea asp-for="Comment" class="textComment" maxlength="128" rows="5" type="text" placeholder="Комментарий"></textarea>
 
         <div class="div-orderCheck">
             <p class="textOrder">К оплате: </p>
-            <p class="sum">@Model.Sum ₽</p>
+            <p class="sum">@ViewBag.Sum ₽</p>
         </div>
 
         <button class="form_auth_button" style="border-radius: 9px;" type="submit" name="form_auth_submit">Подтвердить заказ</button>

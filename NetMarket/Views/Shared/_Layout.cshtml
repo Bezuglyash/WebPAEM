@@ -60,33 +60,20 @@
                 <ul>
                     @if (User.Identity.IsAuthenticated)
                     {
-                        if (User.IsInRole("user")) 
-                        {
-                            <li class="li-authorized">
-                                <div id="openUserMenu" onclick="OpenUserMenu()" class="div-username"><a href="#" class="username" style="text-decoration: none; color: blue; margin-right: 12px;">@User.Identity.Name</a><img src="~/userMenu.svg" alt="Пользователь" style="color: aqua"></div>
-                                <div class="div-user-menu" style="position: absolute;" id="userMenu">
-                                    <label style="color: blue; font-size: 19px; font-weight: bold; align-self: center;">@User.Identity.Name</label>
-                                    <div class="line"></div>
-                                    <a class="a-navigation"  style="text-decoration: none;" asp-area="" asp-controller="Market" asp-action="Phone">Мои заказы</a>
-                                    <a class="a-navigation"  style="text-decoration: none;" asp-area="" asp-controller="Market" asp-action="Phone">Настройки</a>
-                                    <div class="line"></div>
-                                    <a class="a-exit" style="text-decoration: none;" asp-area="" asp-controller="Account" asp-action="Logout">Выйти</a>
-                                </div>
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="li-authorized">
-                                <div id="openUserMenu" onclick="OpenUserMenu()" class="div-username"><a href="#" class="username" style="text-decoration: none; color: blue; margin-right: 12px;">@User.Identity.Name</a><img src="~/userMenu.svg" alt="Пользователь" style="color: aqua"></div>
-                                <div class="div-user-menu" style="position: absolute; height: 128px;" id="userMenu">
-                                    <label style="color: blue; font-size: 19px; font-weight: bold; align-self: center;">@User.Identity.Name</label>
-                                    <div class="line"></div>
-                                    <a class="a-navigation" style="text-decoration: none;" asp-area="" asp-controller="Market" asp-action="Phone">Настройки</a>
-                                    <div class="line"></div>
-                                    <a class="a-exit" style="text-decoration: none;" asp-area="" asp-controller="Account" asp-action="Logout">Выйти</a>
-                                </div>
-                            </li>
-                        }
+                        <li class="li-authorized">
+                            <div id="openUserMenu" onclick="OpenUserMenu()" class="div-username"><a href="#" class="username" style="text-decoration: none; color: blue; margin-right: 12px;">@User.Identity.Name</a><img src="~/userMenu.svg" alt="Пользователь" style="color: aqua"></div>
+                            <div class="div-user-menu" style="position: absolute;" id="userMenu">
+                                <label style="color: blue; font-size: 19px; font-weight: bold; align-self: center;">@User.Identity.Name</label>
+                                <div class="line"></div>
+                                @if (User.IsInRole("user"))
+                                {
+                                    <a class="a-navigation"  style="text-decoration: none;" asp-area="" asp-controller="Market" asp-action="MyOrders">Мои заказы</a>
+                                }
+                                <a class="a-navigation"  style="text-decoration: none;" asp-area="" asp-controller="Account" asp-action="Settings">Настройки</a>
+                                <div class="line"></div>
+                                <a class="a-exit" style="text-decoration: none;" asp-area="" asp-controller="Account" asp-action="Logout">Выйти</a>
+                            </div>
+                        </li>
                     }
                     else
                     {
@@ -119,14 +106,15 @@
         var currentProductId;
 
         $(function () {
-            document.getElementById('counter').style.visibility = "collapse";
+            if (document.getElementById('counter')) {
+                document.getElementById('counter').style.visibility = "collapse";
+            }
             if (document.getElementById('userMenu')) {
                 document.getElementById('userMenu').style.visibility = "collapse";
             }
         });
 
         function init() {
-            document.getElementById('counter').innerHTML = "";
             $.ajax({
                 type: "GET",
                 url: "/Market/GetCountPhonesInBasket",
@@ -173,8 +161,11 @@
                     if (document.getElementById("phoneList")) {
                         document.getElementById("phoneList").style.opacity = 1;
                     }
-                    else {
+                    else if (document.getElementById("cartList")) {
                         document.getElementById("cartList").style.opacity = 1;
+                    }
+                    else {
+                        document.getElementById("ordersList").style.opacity = 1;
                     }
                 }
             }
@@ -189,24 +180,24 @@
                 url: "/Market/GetMoreDetailed",
                 data: { productId },
                 success: function (product) {
+                    var body;
                     if (document.getElementById("phoneList")) {
                         document.getElementById("phoneList").style.opacity = 0.28;
+                        body = document.getElementById("phoneList");
+                    }
+                    else if (document.getElementById("cartList")) {
+                        document.getElementById("cartList").style.opacity = 0.28;
+                        body = document.getElementById("cartList");
                     }
                     else {
-                        document.getElementById("cartList").style.opacity = 0.28;
+                        document.getElementById("ordersList").style.opacity = 0.28;
+                        body = document.getElementById("ordersList");
                     }
 
                     var divMain = document.createElement("div");
                     divMain.id = "moreDetailed";
                     divMain.className = "div-more-container";
 
-                    var body;
-                    if (document.getElementById("phoneList")) {
-                        body = document.getElementById("phoneList");
-                    }
-                    else {
-                        body = document.getElementById("cartList");
-                    }
                     body.before(divMain, document.body);
 
                     var name = document.createElement("p");
@@ -343,7 +334,7 @@
                     price.innerText = product['price'] + " ₽";
                     divPriceButton.appendChild(price);
 
-                    if (document.getElementById("phoneList")) {
+                    if (document.getElementById("phoneList") || document.getElementById("ordersList")) {
                         if (buttonAddToBasket == null) {
                             buttonAddToBasket = document.createElement("button");
                             buttonAddToBasket.id = "button";

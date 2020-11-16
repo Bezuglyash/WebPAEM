@@ -1,0 +1,179 @@
+﻿@model IEnumerable<NetMarket.ViewModels.MyOrders.OrderViewModel>
+@{
+    ViewData["Title"] = "Мои заказы";
+}
+<head>
+    <link rel="stylesheet" href="~/css/myOrders.css" />
+</head>
+<body id="ordersList" class="body-myOrders">
+    @if (Model.Count() > 0)
+    {
+        <h1 class="text-center" style="margin-bottom: 28px; color: mediumslateblue">Мои заказы</h1>
+        <ul class="ul-orderCard">
+            @foreach (var item in Model)
+            {
+                <li class="li-orderCard">
+                    <div id="@item.OrderNumber" class="myOrderCard">
+                        <div class="orderData">
+                            <p id="numberOrder">Заказ №@item.OrderNumber</p>
+                            <p id="fullNameRow">Заказчик</p>
+                            <p id="fullName">@item.CustomerFullName</p>
+                            <p id="addressRow">Адрес доставки</p>
+                            <p id="address">@item.Address</p>
+                            <p id="dateRow">Дата заказа</p>
+                            <p id="date">@item.OrderDate</p>
+                            <p id="sumRow">Стоимость заказа</p>
+                            <p id="sum">@item.Sum ₽</p>
+                            <p id="statusRow">Статус</p>
+                            <p id="status">@item.Status</p>
+                            <p id="commentRow">Комментарий</p>
+                            @if (item.Comment != "-")
+                            {
+                                <p id="comment">@item.Comment</p>
+                            }
+                            else
+                            {
+                                <p id="comment" style="text-align: center;">@item.Comment</p>
+                            }
+                            <div id="rowButton">
+                                @if (item.Status == "Заказ доставлен. Ожидается оплата!")
+                                {
+                                    <button id="toggleButton-@item.OrderNumber" class="toggleButton" style="outline: none;" onclick="ToggleButtonClick(@item.OrderNumber)">
+                                        Развернуть
+                                    </button>
+                                    <button class="paymentButton" style="outline: none;">
+                                        Оплатить
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button id="toggleButton-@item.OrderNumber" class="toggleButton" style="margin-right: 0; outline: none;" onclick="ToggleButtonClick(@item.OrderNumber)">
+                                        Развернуть
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                        <div class="orderPhones" style="display: none">
+                            <ul id="ul-@item.OrderNumber" class="ul-products">
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <div style="margin: 0; width: 100%;">
+            <p style="font-size: 40px; color: mediumslateblue; text-align: center;">Вы ещё не делали заказов в нашем магазине!</p>
+        </div>
+    }
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js"></script>
+    <script>
+        window.onload = init;
+        var productNumber = [];
+
+        $(function () {
+            $(".orderPhones").hide();
+        });
+
+        function init() {
+            //alert("Топчик!");
+        };
+
+        function ToggleButtonClick(orderNumber) {
+            if (productNumber.indexOf(orderNumber) == -1) {
+                $.ajax({
+                    type: "POST",
+                    url: "/Market/GetProductsInOrder",
+                    data: { orderNumber },
+                    success: function (json) {
+                        productNumber.push(orderNumber);
+                        var ul = document.getElementById(`ul-${orderNumber}`);
+                        for (i = 0; i < json.length; i++) {
+                            var li = document.createElement("li");
+                            li.className = "li-product";
+                            ul.append(li);
+
+                            var divData = document.createElement("div");
+                            divData.className = "div-data";
+                            li.append(divData);
+
+                            var divImg = document.createElement("div");
+                            divImg.className = "div-img";
+                            divData.append(divImg);
+                            var img = document.createElement("img");
+                            img.src = `/${json[i]['imageString']}`;
+                            divImg.append(img);
+
+                            var divSpecification = document.createElement("div");
+                            divSpecification.className = "div-specification";
+                            divData.append(divSpecification);
+                            var a = document.createElement("a");
+                            a.className = "a-name a1";
+                            a.href = "#";
+                            a.value = json[i]['id'];
+                            a.style.textDecoration = "none";
+                            a.innerHTML = json[i]['name'];
+                            divSpecification.append(a);
+                            var p = document.createElement("p");
+                            p.className = "price";
+                            p.innerHTML = json[i]['price'] + " ₽";
+                            divSpecification.append(p);
+
+                            var divButton = document.createElement("div");
+                            divButton.className = "div-button";
+                            divData.append(divButton);
+                            var button = document.createElement("a");
+                            button.id = "addToBasket";
+                            button.className = "addToBasket";
+                            button.value = json[i]['id'];
+                            button.innerHTML = "+";
+                            divButton.append(button);
+                        }
+
+                        $(`#${orderNumber}`).siblings()
+                            .children(".orderPhones")
+                            .slideUp(928);
+                        $(`#${orderNumber}`)
+                            .children(".orderPhones")
+                            .slideToggle(928);
+                        RewriteTextInToggleButton(orderNumber);
+                    },
+                    error: function (req, status, error) {
+                        alert(error);
+                    }
+                });
+            } else {
+                $(`#${orderNumber}`).siblings()
+                    .children(".orderPhones")
+                    .slideUp(928);
+                $(`#${orderNumber}`)
+                    .children(".orderPhones")
+                    .slideToggle(928);
+            }
+            RewriteTextInToggleButton(orderNumber);
+        }
+
+        function RewriteTextInToggleButton(partName) {
+            if (document.getElementById(`toggleButton-${partName}`).innerHTML == "Развернуть") {
+                document.getElementById(`toggleButton-${partName}`).innerHTML = "Свернуть";
+            } else {
+                document.getElementById(`toggleButton-${partName}`).innerHTML = "Развернуть";
+            }
+        }
+
+        $(document).on('click', ".addToBasket",
+            function (e) {
+                window.AddToBasketClick(this.value);
+            });
+
+        $(document).on('click', ".a-name",
+            function (e) {
+                window.MoreDetailedClick(this.value);
+            });
+    </script>
+</body>

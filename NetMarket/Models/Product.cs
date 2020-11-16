@@ -28,9 +28,12 @@ namespace NetMarket.Models
 
         public virtual ICollection<ProductInBasket> ProductsInBasket { get; set; }
 
+        public virtual ICollection<OrderProduct> OrderProducts { get; set; }
+
         public Product()
         {
             ProductsInBasket = new List<ProductInBasket>();
+            OrderProducts = new List<OrderProduct>();
         }
     }
 }

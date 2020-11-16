@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -17,13 +18,15 @@ namespace NetMarket.Controllers
         private UserRepository _userRepository;
         private ProductRepository _productRepository;
         private ProductInBasketRepository _productInBasketRepository;
+        private OrderRepository _orderRepository;
         private readonly ILogger<MarketController> _logger;
 
-        public MarketController(UserRepository userRepository, ProductRepository productRepository, ProductInBasketRepository productInBasketRepository, ILogger<MarketController> logger)
+        public MarketController(UserRepository userRepository, ProductRepository productRepository, ProductInBasketRepository productInBasketRepository, OrderRepository orderRepository, ILogger<MarketController> logger)
         {
             _userRepository = userRepository;
             _productRepository = productRepository;
             _productInBasketRepository = productInBasketRepository;
+            _orderRepository = orderRepository;
             _logger = logger;
             //_httpContextAccessor = httpContextAccessor;
             if (_productRepository.GetProducts().Count == 0)
@@ -125,10 +128,60 @@ namespace NetMarket.Controllers
             if (HttpContext.User.Identity.Name == null)
             {
                 Guid userId = new Guid(HttpContext.Request.Cookies["NotAuthorizedUser"]);
-                return View(_productInBasketRepository.GetDataProductsInCartForNotAuthorizedUser(userId));
+                ViewBag.Sum = _productInBasketRepository.GetPriceSumProductsInCartForNotAuthorizedUser(userId);
+                return View();
             }
 
-            return View(_productInBasketRepository.GetDataProductsInCartForAuthorizedUser(HttpContext.User.Identity.Name));
+            ViewBag.Sum = _productInBasketRepository.GetPriceSumProductsInCartForAuthorizedUser(HttpContext.User.Identity.Name);
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> OrderRegistration(OrderRegistrationViewModel orderRegistrationViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                List<int> productsId;
+                int sum;
+                if (HttpContext.User.Identity.Name == null)
+                {
+                    sum = _productInBasketRepository.GetPriceSumProductsInCartForNotAuthorizedUser(new Guid(HttpContext.Request.Cookies["NotAuthorizedUser"]));
+                    productsId = await _productInBasketRepository.DeleteProductsInBasketForNotAuthorizedUserAsync(new Guid(HttpContext.Request.Cookies["NotAuthorizedUser"]));
+                    await _orderRepository.AddNewOrderAsync(null,
+                        DateTime.Now,
+                        orderRegistrationViewModel.Name,
+                        orderRegistrationViewModel.Surname,
+                        orderRegistrationViewModel.MiddleName,
+                        orderRegistrationViewModel.Email,
+                        orderRegistrationViewModel.PhoneNumber,
+                        orderRegistrationViewModel.Address,
+                        orderRegistrationViewModel.Comment,
+                        sum,
+                        productsId);
+                    return RedirectToAction("OrderRegistrationComplete", "Market");
+                }
+                sum = _productInBasketRepository.GetPriceSumProductsInCartForAuthorizedUser(HttpContext.User.Identity.Name);
+                var userId = _userRepository.GetUsrId(HttpContext.User.Identity.Name);
+                productsId = await _productInBasketRepository.DeleteProductsInBasketForAuthorizedUserAsync(HttpContext.User.Identity.Name);
+                await _orderRepository.AddNewOrderAsync(userId,
+                    DateTime.Now,
+                    orderRegistrationViewModel.Name,
+                    orderRegistrationViewModel.Surname,
+                    orderRegistrationViewModel.MiddleName,
+                    orderRegistrationViewModel.Email,
+                    orderRegistrationViewModel.PhoneNumber,
+                    orderRegistrationViewModel.Address,
+                    orderRegistrationViewModel.Comment,
+                    sum,
+                    productsId);
+                return RedirectToAction("OrderRegistrationComplete", "Market");
+            }
+
+            ViewBag.Sum = HttpContext.User.Identity.Name != null
+                ? _productInBasketRepository.GetPriceSumProductsInCartForAuthorizedUser(HttpContext.User.Identity.Name)
+                : _productInBasketRepository.GetPriceSumProductsInCartForNotAuthorizedUser(new Guid(HttpContext.Request.Cookies["NotAuthorizedUser"]));
+
+            return View(orderRegistrationViewModel);
         }
 
         [HttpGet]
@@ -148,6 +201,24 @@ namespace NetMarket.Controllers
                 return Json(userViewModel);
             }
             return null;
+        }
+
+        [HttpGet]
+        public IActionResult OrderRegistrationComplete()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult MyOrders()
+        {
+            return View(_orderRepository.GetAllUserOrders(HttpContext.User.Identity.Name));
+        }
+
+        [HttpPost]
+        public JsonResult GetProductsInOrder(int orderNumber)
+        {
+            return Json(_orderRepository.GetProductsInOrder(orderNumber));
         }
 
         [HttpGet]

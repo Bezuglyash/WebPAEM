@@ -2,20 +2,22 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Memory;
 using NetMarket.Entities;
 using NetMarket.Models;
 using NetMarket.ViewModels;
-using NetMarket.ViewModels.Order;
 
 namespace NetMarket.Repository
 {
     public class ProductInBasketRepository
     {
         private NetMarketDbContext _netMarketDbContext;
+        private IMemoryCache _cache;
 
-        public ProductInBasketRepository(NetMarketDbContext netMarketDbContext)
+        public ProductInBasketRepository(NetMarketDbContext netMarketDbContext, IMemoryCache cache)
         {
             _netMarketDbContext = netMarketDbContext;
+            _cache = cache;
         }
 
         public async Task AddProductInBasketForAuthorizedUserAsync(Guid userId, int productId)
@@ -40,10 +42,10 @@ namespace NetMarket.Repository
             await _netMarketDbContext.SaveChangesAsync();
         }
 
-        public int GetCountProductsInBasketForAuthorizedUser(string username)
+        public int GetCountProductsInBasketForAuthorizedUser(string login)
         {
             return (from product in _netMarketDbContext.ProductsInBasket
-                where product.User.Login == username
+                where product.User.Login == login
                 select product).ToList().Count;
         }
 
@@ -54,10 +56,10 @@ namespace NetMarket.Repository
                 select product).ToList().Count;
         }
 
-        public List<ProductInBasketViewModel> GetProductsInCartForAuthorizedUser(string username)
+        public List<ProductInBasketViewModel> GetProductsInCartForAuthorizedUser(string login)
         {
             return (from productInBasket in _netMarketDbContext.ProductsInBasket
-                where productInBasket.User.Login == username
+                where productInBasket.User.Login == login
                 join product in _netMarketDbContext.Products on productInBasket.ProductId equals product.Id 
                 select new ProductInBasketViewModel {
                     Id = productInBasket.Id,
@@ -83,30 +85,24 @@ namespace NetMarket.Repository
                 }).ToList();
         }
 
-        public OrderRegistrationViewModel GetDataProductsInCartForAuthorizedUser(string username)
+        public int GetPriceSumProductsInCartForAuthorizedUser(string login)
         {
-            return new OrderRegistrationViewModel
+            if (!_cache.TryGetValue(login, out int sum))
             {
-                OrderIdPhones = new List<int>((from productInBasket in _netMarketDbContext.ProductsInBasket
-                    where productInBasket.User.Login == username
-                    join product in _netMarketDbContext.Products on productInBasket.ProductId equals product.Id
-                    select product.Id).ToList()),
-                Sum = _netMarketDbContext.ProductsInBasket.Where(product => product.User.Login == username)
-                    .Sum(product => product.Product.Price)
-            };
+                sum = _netMarketDbContext.ProductsInBasket.Where(product => product.User.Login == login).Sum(product => product.Product.Price);
+                _cache.Set(login, sum, new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(3)));
+            }
+            return sum;
         }
 
-        public OrderRegistrationViewModel GetDataProductsInCartForNotAuthorizedUser(Guid userId)
+        public int GetPriceSumProductsInCartForNotAuthorizedUser(Guid userId)
         {
-            return new OrderRegistrationViewModel
+            if (!_cache.TryGetValue(userId, out int sum))
             {
-                OrderIdPhones = new List<int>((from productInBasket in _netMarketDbContext.ProductsInBasket
-                    where productInBasket.NotAuthorizedUserId == userId
-                    join product in _netMarketDbContext.Products on productInBasket.ProductId equals product.Id
-                    select product.Id).ToList()),
-                Sum = _netMarketDbContext.ProductsInBasket.Where(product => product.NotAuthorizedUserId == userId)
-                    .Sum(product => product.Product.Price)
-            };
+                sum = _netMarketDbContext.ProductsInBasket.Where(product => product.NotAuthorizedUserId == userId).Sum(product => product.Product.Price);
+                _cache.Set(userId, sum, new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(3)));
+            }
+            return sum;
         }
 
         public async Task DeleteProductFromCartAsync(int id)
@@ -114,6 +110,36 @@ namespace NetMarket.Repository
             var product = _netMarketDbContext.ProductsInBasket.Find(id);
             _netMarketDbContext.ProductsInBasket.Remove(product);
             await _netMarketDbContext.SaveChangesAsync();
+        }
+
+        public async Task<List<int>> DeleteProductsInBasketForAuthorizedUserAsync(string login)
+        {
+            var products = (from p in _netMarketDbContext.ProductsInBasket
+                where p.User.Login == login
+                select p).ToList();
+            var productsId = new List<int>();
+            foreach (var product in products)
+            {
+                productsId.Add(product.ProductId);
+                _netMarketDbContext.ProductsInBasket.Remove(product);
+            }
+            await _netMarketDbContext.SaveChangesAsync();
+            return productsId;
+        }
+
+        public async Task<List<int>> DeleteProductsInBasketForNotAuthorizedUserAsync(Guid userId)
+        {
+            var products = (from p in _netMarketDbContext.ProductsInBasket
+                where p.NotAuthorizedUserId == userId
+                select p).ToList();
+            var productsId = new List<int>();
+            foreach (var product in products)
+            {
+                productsId.Add(product.ProductId);
+                _netMarketDbContext.ProductsInBasket.Remove(product);
+            }
+            await _netMarketDbContext.SaveChangesAsync();
+            return productsId;
         }
     }
 }

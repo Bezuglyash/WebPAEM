@@ -16,7 +16,7 @@
                     <li id="@item.Id" class="li-container-cart">
                         <div id="data" class="div-data">
                             <div class="div-img">
-                                <img src="~/@item.ImageString" alt=""/>
+                                <img src="~/@item.ImageString" alt="" />
                             </div>
                             <div id="specification" class="div-specification">
                                 <a class="a-name a1" href="#" style="text-decoration: none;" onclick="MoreDetailedClick(@item.ProductId)">@item.Name</a>
@@ -28,7 +28,7 @@
                 }
             </ul>
         </div>
-        <div class="div-orderCard">
+        <div id="orderCard" class="div-orderCard">
             <div class="div-orderSum">
                 <p class="orderText">Итого</p>
                 <p id="sum" class="orderSum">@Model.Sum(m => m.Price) ₽</p>
@@ -57,10 +57,15 @@
                 </span>
             </div>
         </div>
+        <div id="zeroBasket" style="display: none; margin: 0; width: 100%;">
+            <p style="font-size: 40px; color: mediumslateblue; text-align: center;">Корзина пуста!</p>
+        </div>
     }
     else
     {
-        <a style="font-size: 40px;">Корзина пуста!</a>
+        <div style="margin: 0; width: 100%;">
+            <p style="font-size: 40px; color: mediumslateblue; text-align: center;">Корзина пуста!</p>
+        </div>
     }
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -69,7 +74,7 @@
     <script>
         window.onload = init;
 
-        $(function() {
+        $(function () {
             //alert("Топчик!");
         });
 
@@ -89,6 +94,9 @@
                     if (document.getElementById('counter').innerHTML == 0) {
                         document.getElementById('counter').innerHTML = "";
                         document.getElementById('counter').style.visibility = "collapse";
+                        document.getElementById('list').style.display = "none";
+                        document.getElementById('orderCard').style.display = "none";
+                        document.getElementById('zeroBasket').style.display = "block";
                     }
                     var elementsLi = $("#basketList").find('li');
                     var length = elementsLi.length;
@@ -101,17 +109,17 @@
                         sum += $(elementsLi[i]).children('.div-data').children('.div-specification').find('.price').innerText.split("₽")[0];
                         //alert($(elementsLi[i]).children('.div-data').children('.div-specification').find('.price').innerText.toString().split("₽")[0]);
                     }*/
-                    $({ numberValue: document.getElementById('sum').innerHTML.split(" ₽")[0] }).animate({numberValue: sum}, {
-		
+                    $({ numberValue: document.getElementById('sum').innerHTML.split(" ₽")[0] }).animate({ numberValue: sum }, {
+
                         duration: 528, // Продолжительность анимации, где 500 = 0,5 одной секунды, то есть 500 миллисекунд
                         easing: "swing",
-			
-                        step: function(val) {
-			
+
+                        step: function (val) {
+
                             $("#sum").html(Math.ceil(val) + " ₽"); // Блок, где необходимо сделать анимацию
-				
+
                         }
-			
+
                     });
                 },
                 error: function (req, status, error) {
