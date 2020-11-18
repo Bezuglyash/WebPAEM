@@ -20,7 +20,7 @@ namespace NetMarket.Repository
             _cache = cache;
         }
 
-        public async Task AddProductInBasketForAuthorizedUserAsync(Guid userId, int productId)
+        public async Task AddProductInBasketForAuthorizedUserAsync(string login, Guid userId, int productId)
         {
             var productInBasket = new ProductInBasket
             {
@@ -28,6 +28,7 @@ namespace NetMarket.Repository
                 ProductId = productId
             };
             _netMarketDbContext.ProductsInBasket.Add(productInBasket);
+            _cache.Remove(login);
             await _netMarketDbContext.SaveChangesAsync();
         }
 
@@ -39,6 +40,7 @@ namespace NetMarket.Repository
                 ProductId = productId
             };
             _netMarketDbContext.ProductsInBasket.Add(productInBasket);
+            _cache.Remove(userId.ToString());
             await _netMarketDbContext.SaveChangesAsync();
         }
 
@@ -97,10 +99,10 @@ namespace NetMarket.Repository
 
         public int GetPriceSumProductsInCartForNotAuthorizedUser(Guid userId)
         {
-            if (!_cache.TryGetValue(userId, out int sum))
+            if (!_cache.TryGetValue(userId.ToString(), out int sum))
             {
                 sum = _netMarketDbContext.ProductsInBasket.Where(product => product.NotAuthorizedUserId == userId).Sum(product => product.Product.Price);
-                _cache.Set(userId, sum, new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(3)));
+                _cache.Set(userId.ToString(), sum, new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(3)));
             }
             return sum;
         }
@@ -108,6 +110,7 @@ namespace NetMarket.Repository
         public async Task DeleteProductFromCartAsync(int id)
         {
             var product = _netMarketDbContext.ProductsInBasket.Find(id);
+            _cache.Remove(product.UserId != null ? product.User.Login : product.NotAuthorizedUserId.ToString());
             _netMarketDbContext.ProductsInBasket.Remove(product);
             await _netMarketDbContext.SaveChangesAsync();
         }
@@ -123,6 +126,7 @@ namespace NetMarket.Repository
                 productsId.Add(product.ProductId);
                 _netMarketDbContext.ProductsInBasket.Remove(product);
             }
+            _cache.Remove(login);
             await _netMarketDbContext.SaveChangesAsync();
             return productsId;
         }
@@ -138,6 +142,7 @@ namespace NetMarket.Repository
                 productsId.Add(product.ProductId);
                 _netMarketDbContext.ProductsInBasket.Remove(product);
             }
+            _cache.Remove(userId.ToString());
             await _netMarketDbContext.SaveChangesAsync();
             return productsId;
         }

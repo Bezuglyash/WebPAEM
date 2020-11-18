@@ -1,0 +1,139 @@
+﻿.h1 {
+    text-align: center;
+    color: mediumslateblue;
+}
+
+.settingsList {
+    width: 40%;
+    list-style: none;
+    margin: 0 30%;
+    padding: 0;
+}
+
+.listElement {
+    display: block;
+    width: 100%;
+    -ms-transition: width .2s;
+    -o-transition: width .2s;
+    -webkit-transition: width .2s;
+    transition: width .2s;
+}
+
+.loginContainer, .emailContainer, .passwordContainer, .nameContainer, .surnameContainer, .middleNameContainer, .phoneNumberContainer {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    background: #fff;
+    border: none;
+    border-radius: 9px;
+    height: auto;
+    margin: 28px 0;
+    padding: 28px 0;
+}
+
+.login, .email, .password, .name, .surname, .middleName, .phoneNumber {
+    font-size: 27px;
+    color: #2F4F4F;
+    font-family: cursive;
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.loginText, .emailText, .nameText, .surnameText, .middleNameText, .phoneNumberText {
+    font-size: 27px;
+    color: mediumslateblue;
+    text-align: center;
+    margin-top: 15px;
+    margin-bottom: 28px;
+}
+
+.loginRewriteInput, .emailRewriteInput, .nameRewriteInput, .surnameRewriteInput, .middleNameRewriteInput, .phoneNumberRewriteInput {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.passwordRewriteInputs {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.loginRewriteInput  input, .emailRewriteInput  input, .passwordRewriteInputs  input, .nameRewriteInput input, .surnameRewriteInput input, .middleNameRewriteInput input, .phoneNumberRewriteInput input {
+    background: #FFF0F5;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    font-size: 27px;
+    color: mediumslateblue;
+    margin-right: 5%;
+    margin-top: 15px;
+    margin-left: 5%;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+#loginRewriteCancel, #emailRewriteCancel {
+    width: 40%;
+    margin-left: 30%;
+    color: white;
+    background: coral;
+    font-size: 19px;
+    height: 40px;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    text-align: center;
+    margin-top: 15px;
+    margin-bottom: 5px;
+}
+
+.buttonRewrite {
+    width: 40%;
+    margin-left: 30%;
+    color: white;
+    background: mediumslateblue;
+    font-size: 19px;
+    height: 40px;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    text-align: center;
+    margin-top: 15px;
+}
+
+.buttonRewrite:hover, #loginRewriteCancel:hover {
+    opacity: 0.67;
+}
+
+.loginError, .emailError {
+    display: flex;
+    justify-content: center;
+    background: #ffd6cc;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    margin-right: 5%;
+    margin-left: 5%;
+    border-radius: 5px;
+}
+
+#p-loginError, #p-emailError {
+    align-self: center;
+    width: 100%;
+    text-align: center;
+    color: #eb6a6c;
+    font-size: 27px;
+    margin: 0;
+}
+
+.icon {
+    width: 0;
+    align-self: center;
+    text-align: left;
+    font-size: 27px;
+    color: #eb6a6c;
+    margin: 0;
+    padding-top: 5px;
+    padding-left: 5px;
+}

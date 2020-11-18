@@ -3,9 +3,11 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>cdfdd34a-0deb-4fdf-b58d-44ed6f06fd5a</UserSecretsId>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
     <None Include="wwwroot\GalaxyM21Black.png" />
     <None Include="wwwroot\GalaxyM21Blue.png" />
     <None Include="wwwroot\GalaxyZFold2Black.png" />

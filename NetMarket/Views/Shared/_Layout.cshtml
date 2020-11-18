@@ -61,9 +61,9 @@
                     @if (User.Identity.IsAuthenticated)
                     {
                         <li class="li-authorized">
-                            <div id="openUserMenu" onclick="OpenUserMenu()" class="div-username"><a href="#" class="username" style="text-decoration: none; color: blue; margin-right: 12px;">@User.Identity.Name</a><img src="~/userMenu.svg" alt="Пользователь" style="color: aqua"></div>
+                            <div id="openUserMenu" onclick="OpenUserMenu()" class="div-username"><a href="#" id="login" class="username" style="text-decoration: none; color: blue; margin-right: 12px;">@User.Identity.Name</a><img src="~/userMenu.svg" alt="Пользователь" style="color: aqua"></div>
                             <div class="div-user-menu" style="position: absolute;" id="userMenu">
-                                <label style="color: blue; font-size: 19px; font-weight: bold; align-self: center;">@User.Identity.Name</label>
+                                <label id="loginLabel" style="color: blue; font-size: 19px; font-weight: bold; align-self: center;">@User.Identity.Name</label>
                                 <div class="line"></div>
                                 @if (User.IsInRole("user"))
                                 {

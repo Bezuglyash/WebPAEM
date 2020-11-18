@@ -1,6 +1,6 @@
 ﻿namespace NetMarket.ViewModels
 {
-    public class UserViewModel
+    public class UserInOrderRegistrationViewModel
     {
         public string Name { get; set; }
 
