@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using NetMarket.Entities;
 using NetMarket.Models;
+using NetMarket.Validations;
 
 namespace NetMarket.Repository
 {
@@ -49,19 +48,6 @@ namespace NetMarket.Repository
             _netMarketDbContext.Users.Add(user);
             _netMarketDbContext.SaveChanges();
         }
-
-        /*public void UpdateUser(string login, string password, string name, string surname, string numberPhone, string email)
-        {
-            int index = GetIndexById(GetId());
-            _users[index].Login = login;
-            _users[index].Password = password;
-            _users[index].Name = name;
-            _users[index].Surname = surname;
-            _users[index].PhoneNumber = numberPhone;
-            _users[index].Email = email;
-            _userInput = _users[index];
-            Task.Run(() => UpdateUserDb(_users[index]));
-        }*/
 
         public bool IsUniqueLogin(string login , string email)
         {
@@ -126,63 +112,90 @@ namespace NetMarket.Repository
 
         private string EmailUpdate(string login, object newEmail)
         {
-            if ((from human in _netMarketDbContext.Users
-                where human.Email == (string)newEmail
-                 select human).ToList().Count == 0)
+            if (EmailValidation.IsValid((string)newEmail))
             {
-                var user = _netMarketDbContext.Users.Find(GetUserId(login));
-                user.Email = (string)newEmail;
-                _netMarketDbContext.Users.Update(user);
-                return "good";
-            }
+                if ((from human in _netMarketDbContext.Users
+                    where human.Email == (string)newEmail
+                    select human).ToList().Count == 0)
+                {
+                    var user = _netMarketDbContext.Users.Find(GetUserId(login));
+                    user.Email = (string)newEmail;
+                    _netMarketDbContext.Users.Update(user);
+                    return "good";
+                }
 
-            return "bad";
+                return "Этот email уже занят!";
+            }
+            return "Некорректный email!";
         }
 
         private string PasswordUpdate(string login, object passwordData)
         {
-            return "";
+            var passwords = passwordData as List<string>;
+            passwords[0] = Encryption.Encryption.GetHash(passwords[0]);
+            passwords[1] = Encryption.Encryption.GetHash(passwords[1]);
+            if ((from human in _netMarketDbContext.Users
+                where human.Login == login && human.Password == passwords[1]
+                select human).ToList().Count == 1)
+            {
+                var user = _netMarketDbContext.Users.Find(GetUserId(login));
+                user.Password = passwords[0];
+                _netMarketDbContext.Users.Update(user);
+                return "good";
+            }
+            return "Пароль не изменён, так как текущий пароль введён неправильно!";
         }
 
         private string NameUpdate(string login, object name)
         {
-            return "";
+            var user = _netMarketDbContext.Users.Find(GetUserId(login));
+            user.Name = (string)name;
+            _netMarketDbContext.Users.Update(user);
+            return "good";
         }
 
         private string SurnameUpdate(string login, object surname)
         {
-            return "";
+            var user = _netMarketDbContext.Users.Find(GetUserId(login));
+            user.Name = (string)surname;
+            _netMarketDbContext.Users.Update(user);
+            return "good";
         }
 
         private string MiddleNameUpdate(string login, object middleName)
         {
-            return "";
+            var user = _netMarketDbContext.Users.Find(GetUserId(login));
+            user.MiddleName = (string)middleName;
+            _netMarketDbContext.Users.Update(user);
+            return "good";
         }
 
         private string PhoneNumberUpdate(string login, object phoneNumber)
         {
-            return "";
-        }
-
-        private void UpdateUserDb(User userRewrite)
-        {
-            //User user = _netMarketDbContext.Users.Find(GetId());
-            //user = userRewrite;
-            //_netMarketDbContext.SaveChanges();
-        }
-
-        /*private int GetIndexById(int id)
-        {
-            int index = 0;
-            foreach (var user in _users)
+            string response = "good";
+            if (phoneNumber != null)
             {
-                if (user.Id == id)
+                if (PhoneNumberValidation.IsValid((string)phoneNumber))
                 {
-                    return index;
+                    if ((from human in _netMarketDbContext.Users
+                        where human.PhoneNumber == (string)phoneNumber
+                        select human).ToList().Count != 0)
+                    {
+                        response = "Этот номер телефона уже занят!";
+                    }
                 }
-                index++;
+                else
+                {
+                    response = "Некорректный номер телефона!";
+                }
             }
-            return -1;
-        }*/
+            if (response == "good")
+            {
+                var user = _netMarketDbContext.Users.Find(GetUserId(login));
+                user.PhoneNumber = (string)phoneNumber;
+                _netMarketDbContext.Users.Update(user);
+            }
+            return response;
+        }
     }
 }

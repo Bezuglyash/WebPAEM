@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NetMarket.Models;
 using NetMarket.Repository;
+using NetMarket.ValidationAttributes;
 using NetMarket.ViewModels;
 
 namespace NetMarket.Controllers

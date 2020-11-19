@@ -30,9 +30,9 @@
                 <div class="emailRewriteInput" style="display: none">
                     <div id="errorDivEmail" class="emailError" style="display: none">
                         <i class="fa fa-warning fa-lg icon"></i>
-                        <p id="p-emailError">Этот email уже занят!</p>
+                        <p id="p-emailError"></p>
                     </div>
-                    <input type="text" id="newEmail" placeholder="Новый email" autocomplete="new-email"/>
+                    <input type="text" id="newEmail" placeholder="Новый email" autocomplete="new-password"/>
                     <button id="emailRewriteCancel">Отменить</button>
                 </div>
                 <button id="rewriteEmail" class="buttonRewrite" style="outline: none;">Изменить</button>
@@ -42,9 +42,14 @@
             <div class="passwordContainer">
                 <p class="password">Пароль</p>
                 <div class="passwordRewriteInputs" style="display: none">
-                    <input id="currentPassword" placeholder="Текущий пароль" style="margin-top: 0;"/>
-                    <input id="newPassword" placeholder="Новый пароль"/>
-                    <input id="repeatPassword" placeholder="Повторите пароль"/>
+                    <div id="errorDivPassword" class="passwordError" style="display: none">
+                        <i class="fa fa-warning fa-lg icon"></i>
+                        <p id="p-passwordError"></p>
+                    </div>
+                    <input type="password" id="currentPassword" placeholder="Текущий пароль" style="margin-top: 0;" autocomplete="off"/>
+                    <input type="password" id="newPassword" placeholder="Новый пароль" autocomplete="off"/>
+                    <input type="password" id="repeatPassword" placeholder="Повторите пароль" autocomplete="off"/>
+                    <button id="passwordRewriteCancel">Отменить</button>
                 </div>
                 <button id="rewritePassword" class="buttonRewrite" style="outline: none;">Изменить</button>
             </div>
@@ -52,9 +57,10 @@
         <li class="listElement">
             <div class="nameContainer">
                 <p class="name">Имя</p>
-                <p class="nameText">@Model.Name</p>
+                <p id="currentName" class="nameText">@Model.Name</p>
                 <div class="nameRewriteInput" style="display: none">
-                    <input id="newName" placeholder="Имя" autocomplete="new-name"/>
+                    <input id="newName" placeholder="Имя" autocomplete="new-password" />
+                    <button id="nameRewriteCancel">Отменить</button>
                 </div>
                 <button id="rewriteName" class="buttonRewrite" style="outline: none;">Изменить</button>
             </div>
@@ -62,9 +68,10 @@
         <li class="listElement">
             <div class="surnameContainer">
                 <p class="surname">Фамилия</p>
-                <p class="surnameText">@Model.Surname</p>
+                <p id="currentSurname" class="surnameText">@Model.Surname</p>
                 <div class="surnameRewriteInput" style="display: none">
-                    <input id="newSurname" placeholder="Фамилия" autocomplete="off"/>
+                    <input type="text" id="newSurname" placeholder="Фамилия" autocomplete="new-password" />
+                    <button id="surnameRewriteCancel">Отменить</button>
                 </div>
                 <button id="rewriteSurname" class="buttonRewrite" style="outline: none;">Изменить</button>
             </div>
@@ -72,9 +79,17 @@
         <li class="listElement">
             <div class="middleNameContainer">
                 <p class="middleName">Отчество</p>
-                <p class="middleNameText">@Model.MiddleName</p>
+                @if (Model.MiddleName != null)
+                {
+                    <p id="currentMiddleName" class="middleNameText">@Model.MiddleName</p>
+                }
+                else
+                {
+                    <p id="currentMiddleName" class="middleNameText">-</p>
+                }
                 <div class="middleNameRewriteInput" style="display: none">
-                    <input id="newMiddleName" placeholder="Отчество" autocomplete="off"/>
+                    <input type="text" id="newMiddleName" placeholder="Отчество" autocomplete="new-password" />
+                    <button id="middleNameRewriteCancel">Отменить</button>
                 </div>
                 <button id="rewriteMiddleName" class="buttonRewrite" style="outline: none;">Изменить</button>
             </div>
@@ -82,9 +97,21 @@
         <li class="listElement">
             <div class="phoneNumberContainer">
                 <p class="phoneNumber">Номер телефона</p>
-                <p class="phoneNumberText">@Model.PhoneNumber</p>
+                @if (Model.PhoneNumber != null)
+                {
+                    <p id="currentPhoneNumber" class="phoneNumberText">@Model.PhoneNumber</p>
+                }
+                else
+                {
+                    <p id="currentPhoneNumber" class="phoneNumberText">-</p>
+                }
                 <div class="phoneNumberRewriteInput" style="display: none">
-                    <input id="newPhoneNumber" placeholder="Новый номер телефона" autocomplete="off"/>
+                    <div id="errorDivPhoneNumber" class="phoneNumberError" style="display: none">
+                        <i class="fa fa-warning fa-lg icon"></i>
+                        <p id="p-phoneNumberError"></p>
+                    </div>
+                    <input type="text" id="newPhoneNumber" placeholder="Новый номер телефона" autocomplete="new-password" />
+                    <button id="phoneNumberRewriteCancel">Отменить</button>
                 </div>
                 <button id="rewritePhoneNumber" class="buttonRewrite" style="outline: none;">Изменить</button>
             </div>
@@ -96,11 +123,6 @@
     <script src="~/js/site.js"></script>
     <script>
         window.onload = init;
-        //var productNumber = [];
-
-        $(function() {
-            //$(".orderPhones").hide();
-        });
 
         function init() {
             //alert("Топчик!");
@@ -115,7 +137,7 @@
                     Toggle("loginContainer", "loginRewriteInput");
                     $('#newLogin').focus();
                 } else {
-                    if ($('#newLogin').val().length > 0) {
+                    if (!isEmpty($('#newLogin').val())) {
                         var type = "login";
                         var data = $('#newLogin').val();
                         var additionalData = "";
@@ -164,7 +186,7 @@
                     Toggle("emailContainer", "emailRewriteInput");
                     $('#newEmail').focus();
                 } else {
-                    if ($('#newEmail').val().length > 0) {
+                    if (!isEmpty($('#newEmail').val())) {
                         var type = "email";
                         var data = $('#newEmail').val();
                         var additionalData = "";
@@ -183,7 +205,8 @@
                                         Toggle("emailRewriteInput", "emailError");
                                     }
                                 } else {
-                                    if (document.getElementById("errorDivEmail").style.display != "none") {
+                                    $("#p-emailError").text(response);
+                                    if (document.getElementById("errorDivEmail").style.display == "none") {
                                         Toggle("emailRewriteInput", "emailError");
                                     }
                                 }
@@ -203,60 +226,209 @@
                 }
             });
 
-            $('#rewritePassword').click(function() {
-                $(".passwordContainer").siblings()
-                    .children(".passwordRewriteInputs")
-                    .slideUp(928);
-                $(".passwordContainer")
-                    .children(".passwordRewriteInputs")
-                    .slideToggle(928);
-                var button = document.getElementById("rewritePassword");
-                button.innerHTML = "Сохранить";
+            $('#rewritePassword').click(function () {
+                if (document.getElementById("rewritePassword").innerHTML == "Изменить") {
+                    var button = document.getElementById("rewritePassword");
+                    button.innerHTML = "Сохранить";
+                    $('#currentPassword').val('');
+                    $('#newPassword').val('');
+                    $('#repeatPassword').val('');
+                    Toggle("passwordContainer", "passwordRewriteInputs");
+                    $('#currentPassword').focus();
+                } else {
+                    if (!isEmpty($('#newPassword').val())) {
+                        if ($('#newPassword').val() == $('#repeatPassword').val()) {
+                            var type = "password";
+                            var data = $('#newPassword').val();
+                            var additionalData = $('#currentPassword').val();
+                            $.ajax({
+                                type: "POST",
+                                url: "/Account/RewriteUserSettings",
+                                data: { type, data, additionalData },
+                                dataType: "text",
+                                success: function (response) {
+                                    if (response == "good") {
+                                        var button = document.getElementById("rewritePassword");
+                                        button.innerHTML = "Изменить";
+                                        Toggle("passwordContainer", "passwordRewriteInputs");
+                                        if (document.getElementById("errorDivPassword").style.display != "none") {
+                                            Toggle("passwordRewriteInputs", "passwordError");
+                                        }
+                                    } else {
+                                        $("#p-passwordError").text(response);
+                                        if (document.getElementById("errorDivPassword").style.display == "none") {
+                                            Toggle("passwordRewriteInputs", "passwordError");
+                                        }
+                                    }
+                                },
+                                error: function (req, status, error) {
+                                    alert(error);
+                                }
+                            });
+                        }
+                        else {
+                            $("#p-passwordError").text("Пароль не изменён, так как новый пороль повторен неверно!");
+                            if (document.getElementById("errorDivPassword").style.display == "none") {
+                                Toggle("passwordRewriteInputs", "passwordError");
+                            }
+                        }
+                    } else {
+                        Toggle("passwordContainer", "passwordRewriteInputs");
+                        if (document.getElementById("errorDivPassword").style.display != "none") {
+                            Toggle("passwordRewriteInputs", "passwordError");
+                        }
+                        var button = document.getElementById("rewritePassword");
+                        button.innerHTML = "Изменить";
+                    }
+                }
             });
 
-            $('#rewriteName').click(function() {
-                $(".nameContainer").siblings()
-                    .children(".nameRewriteInput")
-                    .slideUp(928);
-                $(".nameContainer")
-                    .children(".nameRewriteInput")
-                    .slideToggle(928);
-                var button = document.getElementById("rewriteName");
-                button.innerHTML = "Сохранить";
+            $('#rewriteName').click(function () {
+                if (document.getElementById("rewriteName").innerHTML == "Изменить") {
+                    var button = document.getElementById("rewriteName");
+                    button.innerHTML = "Сохранить";
+                    $('#newName').val('');
+                    Toggle("nameContainer", "nameRewriteInput");
+                    $('#newName').focus();
+                } else {
+                    if (!isEmpty($('#newName').val())) {
+                        var type = "name";
+                        var data = $('#newName').val();
+                        var additionalData = "";
+                        $.ajax({
+                            type: "POST",
+                            url: "/Account/RewriteUserSettings",
+                            data: { type, data, additionalData },
+                            dataType: "text",
+                            success: function (response) {
+                                if (response == "good") {
+                                    document.getElementById("currentName").innerHTML = data;
+                                    var button = document.getElementById("rewriteName");
+                                    button.innerHTML = "Изменить";
+                                    Toggle("nameContainer", "nameRewriteInput");
+                                }
+                            },
+                            error: function (req, status, error) {
+                                alert(error);
+                            }
+                        });
+                    } else {
+                        Toggle("nameContainer", "nameRewriteInput");
+                        var button = document.getElementById("rewriteName");
+                        button.innerHTML = "Изменить";
+                    }
+                }
             });
 
-            $('#rewriteSurname').click(function() {
-                $(".surnameContainer").siblings()
-                    .children(".surnameRewriteInput")
-                    .slideUp(928);
-                $(".surnameContainer")
-                    .children(".surnameRewriteInput")
-                    .slideToggle(928);
-                var button = document.getElementById("rewriteSurname");
-                button.innerHTML = "Сохранить";
+            $('#rewriteSurname').click(function () {
+                if (document.getElementById("rewriteSurname").innerHTML == "Изменить") {
+                    var button = document.getElementById("rewriteSurname");
+                    button.innerHTML = "Сохранить";
+                    $('#newSurname').val('');
+                    Toggle("surnameContainer", "surnameRewriteInput");
+                    $('#newSurname').focus();
+                } else {
+                    if (!isEmpty($('#newSurname').val())) {
+                        var type = "surname";
+                        var data = $('#newSurname').val();
+                        var additionalData = "";
+                        $.ajax({
+                            type: "POST",
+                            url: "/Account/RewriteUserSettings",
+                            data: { type, data, additionalData },
+                            dataType: "text",
+                            success: function (response) {
+                                if (response == "good") {
+                                    document.getElementById("currentSurname").innerHTML = data;
+                                    var button = document.getElementById("rewriteSurname");
+                                    button.innerHTML = "Изменить";
+                                    Toggle("surnameContainer", "surnameRewriteInput");
+                                }
+                            },
+                            error: function (req, status, error) {
+                                alert(error);
+                            }
+                        });
+                    } else {
+                        Toggle("surnameContainer", "surnameRewriteInput");
+                        var button = document.getElementById("rewriteSurname");
+                        button.innerHTML = "Изменить";
+                    }
+                }
             });
 
-            $('#rewriteMiddleName').click(function() {
-                $(".middleNameContainer").siblings()
-                    .children(".middleNameRewriteInput")
-                    .slideUp(928);
-                $(".middleNameContainer")
-                    .children(".middleNameRewriteInput")
-                    .slideToggle(928);
-                var button = document.getElementById("rewriteMiddleName");
-                button.innerHTML = "Сохранить";
+            $('#rewriteMiddleName').click(function () {
+                if (document.getElementById("rewriteMiddleName").innerHTML == "Изменить") {
+                    var button = document.getElementById("rewriteMiddleName");
+                    button.innerHTML = "Сохранить";
+                    $('#newSurname').val('');
+                    Toggle("middleNameContainer", "middleNameRewriteInput");
+                    $('#newSurname').focus();
+                }
+                else {
+                    var type = "middleName";
+                    var data = $('#newSurname').val();
+                    var additionalData = "";
+                    $.ajax({
+                        type: "POST",
+                        url: "/Account/RewriteUserSettings",
+                        data: { type, data, additionalData },
+                        dataType: "text",
+                        success: function (response) {
+                            if (response == "good") {
+                                document.getElementById("currentMiddleName").innerHTML = !isEmpty(data) ? data : "-";
+                                var button = document.getElementById("rewriteMiddleName");
+                                button.innerHTML = "Изменить";
+                                Toggle("middleNameContainer", "middleNameRewriteInput");
+                            }
+                        },
+                        error: function (req, status, error) {
+                            alert(error);
+                        }
+                    });
+                }
             });
 
-            $('#rewritePhoneNumber').click(function() {
-                $(".phoneNumberContainer").siblings()
-                    .children(".phoneNumberRewriteInput")
-                    .slideUp(928);
-                $(".phoneNumberContainer")
-                    .children(".phoneNumberRewriteInput")
-                    .slideToggle(928);
-                var button = document.getElementById("rewritePhoneNumber");
-                button.innerHTML = "Сохранить";
+            $('#rewritePhoneNumber').click(function () {
+                if (document.getElementById("rewritePhoneNumber").innerHTML == "Изменить") {
+                    var button = document.getElementById("rewritePhoneNumber");
+                    button.innerHTML = "Сохранить";
+                    $('#newPhoneNumber').val('');
+                    Toggle("phoneNumberContainer", "phoneNumberRewriteInput");
+                    $('#newPhoneNumber').focus();
+                } else {
+                    var type = "phoneNumber";
+                    var data = $('#newPhoneNumber').val();
+                    var additionalData = "";
+                    $.ajax({
+                        type: "POST",
+                        url: "/Account/RewriteUserSettings",
+                        data: { type, data, additionalData },
+                        dataType: "text",
+                        success: function (response) {
+                            if (response == "good") {
+                                document.getElementById("currentPhoneNumber").innerHTML = !isEmpty(data) ? data : "-";
+                                var button = document.getElementById("rewritePhoneNumber");
+                                button.innerHTML = "Изменить";
+                                Toggle("phoneNumberContainer", "phoneNumberRewriteInput");
+                                if (document.getElementById("errorDivPhoneNumber").style.display != "none") {
+                                    Toggle("phoneNumberRewriteInput", "phoneNumberError");
+                                }
+                            } else {
+                                $("#p-phoneNumberError").text(response);
+                                if (document.getElementById("errorDivPhoneNumber").style.display == "none") {
+                                    Toggle("phoneNumberRewriteInput", "phoneNumberError");
+                                }
+                            }
+                        },
+                        error: function (req, status, error) {
+                            alert(error);
+                        }
+                    });
+                }
             });
+
+
 
             $('#loginRewriteCancel').click(function () {
                 Toggle("loginContainer", "loginRewriteInput");
@@ -275,6 +447,42 @@
                 var button = document.getElementById("rewriteEmail");
                 button.innerHTML = "Изменить";
             });
+
+            $('#passwordRewriteCancel').click(function () {
+                Toggle("passwordContainer", "passwordRewriteInputs");
+                if (document.getElementById("errorDivPassword").style.display != "none") {
+                    Toggle("passwordRewriteInputs", "passwordError");
+                }
+                var button = document.getElementById("rewritePassword");
+                button.innerHTML = "Изменить";
+            });
+
+            $('#nameRewriteCancel').click(function () {
+                Toggle("nameContainer", "nameRewriteInput");
+                var button = document.getElementById("rewriteName");
+                button.innerHTML = "Изменить";
+            });
+
+            $('#surnameRewriteCancel').click(function () {
+                Toggle("surnameContainer", "surnameRewriteInput");
+                var button = document.getElementById("rewriteSurname");
+                button.innerHTML = "Изменить";
+            });
+
+            $('#middleNameRewriteCancel').click(function () {
+                Toggle("middleNameContainer", "middleNameRewriteInput");
+                var button = document.getElementById("rewriteMiddleName");
+                button.innerHTML = "Изменить";
+            });
+
+            $('#phoneNumberRewriteCancel').click(function () {
+                Toggle("phoneNumberContainer", "phoneNumberRewriteInput");
+                if (document.getElementById("errorDivPhoneNumber").style.display != "none") {
+                    Toggle("phoneNumberRewriteInput", "phoneNumberError");
+                }
+                var button = document.getElementById("rewritePhoneNumber");
+                button.innerHTML = "Изменить";
+            });
         });
 
         function Toggle(container, nameDiv) {
@@ -284,6 +492,13 @@
             $(`.${container}`)
                 .children(`.${nameDiv}`)
                 .slideToggle(928);
+        }
+
+        function isEmpty(str) {
+            if (str.trim() == '') 
+                return true;
+    
+            return false;
         }
     </script>
 </body>

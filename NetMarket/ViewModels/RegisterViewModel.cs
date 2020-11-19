@@ -10,7 +10,7 @@ namespace NetMarket.ViewModels
         public string Login { get; set; }
 
         [Required(ErrorMessage = "Это поле обязательно для заполнения!")]
-        [EmailAddress(ErrorMessage = "Некорректный электронный адрес")]
+        [EmailAddress(ErrorMessage = "Некорректный email!")]
         public string Email { get; set; }
 
         [Required(ErrorMessage = "Это поле обязательно для заполнения!")]
@@ -25,8 +25,7 @@ namespace NetMarket.ViewModels
         [Required(ErrorMessage = "Это поле обязательно для заполнения!")]
         public string Surname { get; set; }
 
-        [Required(ErrorMessage = "Это поле обязательно для заполнения!")]
-        public string MiddleName { get; set; }
+        public string? MiddleName { get; set; }
 
         public string PhoneNumber { get; set; }
     }

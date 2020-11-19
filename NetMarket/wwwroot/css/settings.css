@@ -74,7 +74,7 @@
     text-align: center;
 }
 
-#loginRewriteCancel, #emailRewriteCancel {
+#loginRewriteCancel, #emailRewriteCancel, #passwordRewriteCancel, #nameRewriteCancel, #surnameRewriteCancel, #middleNameRewriteCancel, #phoneNumberRewriteCancel {
     width: 40%;
     margin-left: 30%;
     color: white;
@@ -103,11 +103,11 @@
     margin-top: 15px;
 }
 
-.buttonRewrite:hover, #loginRewriteCancel:hover {
+.buttonRewrite:hover, #loginRewriteCancel:hover, , #passwordRewriteCancel:hover, #nameRewriteCancel:hover, #surnameRewriteCancel:hover, #middleNameRewriteCancel:hover, #phoneNumberRewriteCancel:hover {
     opacity: 0.67;
 }
 
-.loginError, .emailError {
+.loginError, .emailError, .passwordError, .phoneNumberError {
     display: flex;
     justify-content: center;
     background: #ffd6cc;
@@ -118,7 +118,7 @@
     border-radius: 5px;
 }
 
-#p-loginError, #p-emailError {
+#p-loginError, #p-emailError, #p-passwordError, #p-phoneNumberError {
     align-self: center;
     width: 100%;
     text-align: center;
@@ -136,4 +136,25 @@
     margin: 0;
     padding-top: 5px;
     padding-left: 5px;
+}
+
+@media screen and (max-width: 1199px) {
+    .settingsList {
+        width: 48%;
+        margin: 0 26%;
+    }
+}
+
+@media screen and (max-width: 991px) {
+    .settingsList {
+        width: 64%;
+        margin: 0 18%;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .settingsList {
+        width: 86%;
+        margin: 0 7%;
+    }
 }
