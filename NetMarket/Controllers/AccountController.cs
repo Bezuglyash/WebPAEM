@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NetMarket.Models;
 using NetMarket.Repository;
+using NetMarket.ValidationAttributes;
 using NetMarket.ViewModels;
 
 namespace NetMarket.Controllers
@@ -60,7 +61,7 @@ namespace NetMarket.Controllers
         [HttpPost]
         public IActionResult Registration(RegisterViewModel registerViewModel)
         {
-            if (!_userRepository.IsUniqueLogin(registerViewModel.Login))
+            if (!_userRepository.IsUniqueLogin(registerViewModel.Login, registerViewModel.Email))
             {
                 ModelState.AddModelError("", "Логин или Email уже занят!");
             }
@@ -114,10 +115,70 @@ namespace NetMarket.Controllers
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id), authProperties);
         }
 
+        private async Task Authenticate(string login, string role)
+        {
+            // создаем один claim
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimsIdentity.DefaultNameClaimType, login),
+                new Claim(ClaimsIdentity.DefaultRoleClaimType, role)
+            };
+            // создаем объект ClaimsIdentity
+            ClaimsIdentity id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
+
+            var authProperties = new AuthenticationProperties
+            {
+                AllowRefresh = false,
+                // Refreshing the authentication session should be allowed.
+
+                ExpiresUtc = DateTimeOffset.MaxValue,
+                // The time at which the authentication ticket expires. A 
+                // value set here overrides the ExpireTimeSpan option of 
+                // CookieAuthenticationOptions set with AddCookie.
+
+                IsPersistent = true,
+                // Whether the authentication session is persisted across 
+                // multiple requests. When used with cookies, controls
+                // whether the cookie's lifetime is absolute (matching the
+                // lifetime of the authentication ticket) or session-based.
+
+                IssuedUtc = DateTimeOffset.Now,
+                // The time at which the authentication ticket was issued.
+
+                RedirectUri = "http://localhost:54946/"
+                // The full path or absolute URI to be used as an http 
+                // redirect response value.
+            };
+
+            // установка аутентификационных куки
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id), authProperties);
+        }
+
         [HttpGet]
         public IActionResult Settings()
         {
-            return View();
+            var user = _userRepository.GetUser(HttpContext.User.Identity.Name);
+            return View(new UserSettingsViewModel
+            {
+                Login = user.Login,
+                Email = user.Email,
+                Name = user.Name,
+                Surname = user.Surname,
+                MiddleName = user.MiddleName,
+                PhoneNumber = user.PhoneNumber
+            });
+        }
+
+        [HttpPost]
+        public async Task<string> RewriteUserSettings(string type, string data, string additionalData)
+        {
+            string response = await _userRepository.UpdateAsync(HttpContext.User.Identity.Name, type, data, additionalData);
+            if (type == "login" && response == "good")
+            {
+                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                await Authenticate(data, HttpContext.User.IsInRole("user") ? "user" : "admin");
+            }
+            return response;
         }
 
         public async Task<IActionResult> Logout()

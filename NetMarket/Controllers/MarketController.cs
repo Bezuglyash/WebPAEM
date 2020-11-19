@@ -4,12 +4,12 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NetMarket.Models;
 using NetMarket.Repository;
 using NetMarket.ViewModels;
-using Newtonsoft.Json.Linq;
 
 namespace NetMarket.Controllers
 {
@@ -63,18 +63,25 @@ namespace NetMarket.Controllers
         [HttpGet]
         public IActionResult Phone()
         {
-            if (HttpContext.User.Identity.Name == null)
+            if (!HttpContext.User.IsInRole("admin"))
             {
-                if (!HttpContext.Request.Cookies.ContainsKey("NotAuthorizedUser"))
+                if (HttpContext.User.Identity.Name == null)
                 {
-                    var options = new CookieOptions
+                    if (!HttpContext.Request.Cookies.ContainsKey("NotAuthorizedUser"))
                     {
-                        MaxAge = TimeSpan.MaxValue
-                    };
-                    HttpContext.Response.Cookies.Append("NotAuthorizedUser", Guid.NewGuid().ToString(), options);
+                        var options = new CookieOptions
+                        {
+                            MaxAge = TimeSpan.MaxValue
+                        };
+                        HttpContext.Response.Cookies.Append("NotAuthorizedUser", Guid.NewGuid().ToString(), options);
+                    }
                 }
+                return View(_productRepository.GetProducts());
             }
-            return View(_productRepository.GetProducts());
+            else
+            {
+                return NotFound();
+            }
         }
 
         [HttpGet]
@@ -113,6 +120,8 @@ namespace NetMarket.Controllers
         [HttpGet]
         public IActionResult Cart()
         {
+            var controller = RouteData.Values["controller"].ToString();
+            var action = RouteData.Values["action"].ToString();
             if (HttpContext.User.Identity.Name == null)
             {
                 Guid userId = new Guid(HttpContext.Request.Cookies["NotAuthorizedUser"]);
@@ -161,7 +170,7 @@ namespace NetMarket.Controllers
                     return RedirectToAction("OrderRegistrationComplete", "Market");
                 }
                 sum = _productInBasketRepository.GetPriceSumProductsInCartForAuthorizedUser(HttpContext.User.Identity.Name);
-                var userId = _userRepository.GetUsrId(HttpContext.User.Identity.Name);
+                var userId = _userRepository.GetUserId(HttpContext.User.Identity.Name);
                 productsId = await _productInBasketRepository.DeleteProductsInBasketForAuthorizedUserAsync(HttpContext.User.Identity.Name);
                 await _orderRepository.AddNewOrderAsync(userId,
                     DateTime.Now,
@@ -190,7 +199,7 @@ namespace NetMarket.Controllers
             if (HttpContext.User.Identity.Name != null)
             {
                 var user = _userRepository.GetUser(HttpContext.User.Identity.Name);
-                var userViewModel = new UserViewModel
+                var userViewModel = new UserInOrderRegistrationViewModel
                 {
                     Name = user.Name,
                     Surname = user.Surname,
@@ -210,12 +219,14 @@ namespace NetMarket.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "user")]
         public IActionResult MyOrders()
         {
             return View(_orderRepository.GetAllUserOrders(HttpContext.User.Identity.Name));
         }
 
         [HttpPost]
+        [Authorize(Roles = "user")]
         public JsonResult GetProductsInOrder(int orderNumber)
         {
             return Json(_orderRepository.GetProductsInOrder(orderNumber));
@@ -246,7 +257,7 @@ namespace NetMarket.Controllers
             }
             else
             {
-                await _productInBasketRepository.AddProductInBasketForAuthorizedUserAsync(_userRepository.GetUsrId(HttpContext.User.Identity.Name), productId);
+                await _productInBasketRepository.AddProductInBasketForAuthorizedUserAsync(HttpContext.User.Identity.Name, _userRepository.GetUserId(HttpContext.User.Identity.Name), productId);
             }
         }
 

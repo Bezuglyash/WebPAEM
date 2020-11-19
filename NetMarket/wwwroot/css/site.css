@@ -268,13 +268,9 @@ body {
     margin-top: 109px;
 }
 
-.body-phone, .body-cart, .body-orderComplete {
+.body-phone, .body-cart, .body-orderComplete, .body-myOrders, .body-Settings {
     margin-top: 67px;
     opacity: 1;
-}
-
-.body-myOrders {
-    margin-top: 94px;
 }
 
 @media screen and (max-width: 755px) {
@@ -346,11 +342,11 @@ body {
         right: 165px;
     }
 
-    .body-auth, .body-registration, .body-orderRegistration, .body-myOrders {
+    .body-auth, .body-registration, .body-orderRegistration {
         margin-top: 240px;
     }
 
-    .body-phone, .body-cart, .body-orderComplete {
+    .body-phone, .body-cart, .body-orderComplete, .body-myOrders, .body-Settings {
         margin-top: 219px;
     }
 }

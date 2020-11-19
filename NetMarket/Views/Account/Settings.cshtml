@@ -1,7 +1,504 @@
-﻿@{
+﻿@model NetMarket.ViewModels.UserSettingsViewModel
+@{
     ViewData["Title"] = "Настройки";
 }
-<h1>@ViewData["Title"]</h1>
-<body>
-    <p>Use this page to detail your site's privacy policy.</p>
+<head>
+    <link rel="stylesheet" href="~/css/settings.css" />
+</head>
+<body class="body-Settings">
+    <h1 class="h1">Настройки</h1>
+    <ul class="settingsList">
+        <li class="listElement">
+            <div class="loginContainer">
+                <p class="login">Логин</p>
+                <p id="currentLogin" class="loginText">@Model.Login</p>
+                <div class="loginRewriteInput" style="display: none">
+                    <div id="errorDivLogin" class="loginError" style="display: none">
+                        <i class="fa fa-warning fa-lg icon"></i>
+                        <p id="p-loginError">Этот логин уже занят!</p>
+                    </div>
+                    <input type="text" id="newLogin" maxlength="12" placeholder="Новый логин" autocomplete="off"/>
+                    <button id="loginRewriteCancel">Отменить</button>
+                </div>
+                <button id="rewriteLogin" class="buttonRewrite" style="outline: none;">Изменить</button>
+            </div>
+        </li>
+        <li class="listElement">
+            <div class="emailContainer">
+                <p class="email">Email</p>
+                <p id="currentEmail" class="emailText">@Model.Email</p>
+                <div class="emailRewriteInput" style="display: none">
+                    <div id="errorDivEmail" class="emailError" style="display: none">
+                        <i class="fa fa-warning fa-lg icon"></i>
+                        <p id="p-emailError"></p>
+                    </div>
+                    <input type="text" id="newEmail" placeholder="Новый email" autocomplete="new-password"/>
+                    <button id="emailRewriteCancel">Отменить</button>
+                </div>
+                <button id="rewriteEmail" class="buttonRewrite" style="outline: none;">Изменить</button>
+            </div>
+        </li>
+        <li class="listElement">
+            <div class="passwordContainer">
+                <p class="password">Пароль</p>
+                <div class="passwordRewriteInputs" style="display: none">
+                    <div id="errorDivPassword" class="passwordError" style="display: none">
+                        <i class="fa fa-warning fa-lg icon"></i>
+                        <p id="p-passwordError"></p>
+                    </div>
+                    <input type="password" id="currentPassword" placeholder="Текущий пароль" style="margin-top: 0;" autocomplete="off"/>
+                    <input type="password" id="newPassword" placeholder="Новый пароль" autocomplete="off"/>
+                    <input type="password" id="repeatPassword" placeholder="Повторите пароль" autocomplete="off"/>
+                    <button id="passwordRewriteCancel">Отменить</button>
+                </div>
+                <button id="rewritePassword" class="buttonRewrite" style="outline: none;">Изменить</button>
+            </div>
+        </li>
+        <li class="listElement">
+            <div class="nameContainer">
+                <p class="name">Имя</p>
+                <p id="currentName" class="nameText">@Model.Name</p>
+                <div class="nameRewriteInput" style="display: none">
+                    <input id="newName" placeholder="Имя" autocomplete="new-password" />
+                    <button id="nameRewriteCancel">Отменить</button>
+                </div>
+                <button id="rewriteName" class="buttonRewrite" style="outline: none;">Изменить</button>
+            </div>
+        </li>
+        <li class="listElement">
+            <div class="surnameContainer">
+                <p class="surname">Фамилия</p>
+                <p id="currentSurname" class="surnameText">@Model.Surname</p>
+                <div class="surnameRewriteInput" style="display: none">
+                    <input type="text" id="newSurname" placeholder="Фамилия" autocomplete="new-password" />
+                    <button id="surnameRewriteCancel">Отменить</button>
+                </div>
+                <button id="rewriteSurname" class="buttonRewrite" style="outline: none;">Изменить</button>
+            </div>
+        </li>
+        <li class="listElement">
+            <div class="middleNameContainer">
+                <p class="middleName">Отчество</p>
+                @if (Model.MiddleName != null)
+                {
+                    <p id="currentMiddleName" class="middleNameText">@Model.MiddleName</p>
+                }
+                else
+                {
+                    <p id="currentMiddleName" class="middleNameText">-</p>
+                }
+                <div class="middleNameRewriteInput" style="display: none">
+                    <input type="text" id="newMiddleName" placeholder="Отчество" autocomplete="new-password" />
+                    <button id="middleNameRewriteCancel">Отменить</button>
+                </div>
+                <button id="rewriteMiddleName" class="buttonRewrite" style="outline: none;">Изменить</button>
+            </div>
+        </li>
+        <li class="listElement">
+            <div class="phoneNumberContainer">
+                <p class="phoneNumber">Номер телефона</p>
+                @if (Model.PhoneNumber != null)
+                {
+                    <p id="currentPhoneNumber" class="phoneNumberText">@Model.PhoneNumber</p>
+                }
+                else
+                {
+                    <p id="currentPhoneNumber" class="phoneNumberText">-</p>
+                }
+                <div class="phoneNumberRewriteInput" style="display: none">
+                    <div id="errorDivPhoneNumber" class="phoneNumberError" style="display: none">
+                        <i class="fa fa-warning fa-lg icon"></i>
+                        <p id="p-phoneNumberError"></p>
+                    </div>
+                    <input type="text" id="newPhoneNumber" placeholder="Новый номер телефона" autocomplete="new-password" />
+                    <button id="phoneNumberRewriteCancel">Отменить</button>
+                </div>
+                <button id="rewritePhoneNumber" class="buttonRewrite" style="outline: none;">Изменить</button>
+            </div>
+        </li>
+    </ul>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js"></script>
+    <script>
+        window.onload = init;
+
+        function init() {
+            //alert("Топчик!");
+        };
+
+        $(function() {
+            $('#rewriteLogin').click(function() {
+                if (document.getElementById("rewriteLogin").innerHTML == "Изменить") {
+                    var button = document.getElementById("rewriteLogin");
+                    button.innerHTML = "Сохранить";
+                    $('#newLogin').val('');
+                    Toggle("loginContainer", "loginRewriteInput");
+                    $('#newLogin').focus();
+                } else {
+                    if (!isEmpty($('#newLogin').val())) {
+                        var type = "login";
+                        var data = $('#newLogin').val();
+                        var additionalData = "";
+                        $.ajax({
+                            type: "POST",
+                            url: "/Account/RewriteUserSettings",
+                            data: { type, data, additionalData },
+                            dataType: "text",
+                            success: function(response) {
+                                if (response == "good") {
+                                    document.getElementById("login").innerHTML = data;
+                                    document.getElementById("loginLabel").innerHTML = data;
+                                    document.getElementById("currentLogin").innerHTML = data;
+                                    var button = document.getElementById("rewriteLogin");
+                                    button.innerHTML = "Изменить";
+                                    Toggle("loginContainer", "loginRewriteInput");
+                                    if (document.getElementById("errorDivLogin").style.display != "none") {
+                                        Toggle("loginRewriteInput", "loginError");
+                                    }
+                                } else {
+                                    if (document.getElementById("errorDivLogin").style.display == "none") {
+                                        Toggle("loginRewriteInput", "loginError");
+                                    }
+                                }
+                            },
+                            error: function(req, status, error) {
+                                alert(error);
+                            }
+                        });
+                    } else {
+                        Toggle("loginContainer", "loginRewriteInput");
+                        if (document.getElementById("errorDivLogin").style.display != "none") {
+                            Toggle("loginRewriteInput", "loginError");
+                        }
+                        var button = document.getElementById("rewriteLogin");
+                        button.innerHTML = "Изменить";
+                    }
+                }
+            });
+
+            $('#rewriteEmail').click(function () {
+                if (document.getElementById("rewriteEmail").innerHTML == "Изменить") {
+                    var button = document.getElementById("rewriteEmail");
+                    button.innerHTML = "Сохранить";
+                    $('#newEmail').val('');
+                    Toggle("emailContainer", "emailRewriteInput");
+                    $('#newEmail').focus();
+                } else {
+                    if (!isEmpty($('#newEmail').val())) {
+                        var type = "email";
+                        var data = $('#newEmail').val();
+                        var additionalData = "";
+                        $.ajax({
+                            type: "POST",
+                            url: "/Account/RewriteUserSettings",
+                            data: { type, data, additionalData },
+                            dataType: "text",
+                            success: function (response) {
+                                if (response == "good") {
+                                    document.getElementById("currentEmail").innerHTML = data;
+                                    var button = document.getElementById("rewriteEmail");
+                                    button.innerHTML = "Изменить";
+                                    Toggle("emailContainer", "emailRewriteInput");
+                                    if (document.getElementById("errorDivEmail").style.display != "none") {
+                                        Toggle("emailRewriteInput", "emailError");
+                                    }
+                                } else {
+                                    $("#p-emailError").text(response);
+                                    if (document.getElementById("errorDivEmail").style.display == "none") {
+                                        Toggle("emailRewriteInput", "emailError");
+                                    }
+                                }
+                            },
+                            error: function (req, status, error) {
+                                alert(error);
+                            }
+                        });
+                    } else {
+                        Toggle("emailContainer", "emailRewriteInput");
+                        if (document.getElementById("errorDivEmail").style.display != "none") {
+                            Toggle("emailRewriteInput", "emailError");
+                        }
+                        var button = document.getElementById("rewriteEmail");
+                        button.innerHTML = "Изменить";
+                    }
+                }
+            });
+
+            $('#rewritePassword').click(function () {
+                if (document.getElementById("rewritePassword").innerHTML == "Изменить") {
+                    var button = document.getElementById("rewritePassword");
+                    button.innerHTML = "Сохранить";
+                    $('#currentPassword').val('');
+                    $('#newPassword').val('');
+                    $('#repeatPassword').val('');
+                    Toggle("passwordContainer", "passwordRewriteInputs");
+                    $('#currentPassword').focus();
+                } else {
+                    if (!isEmpty($('#newPassword').val())) {
+                        if ($('#newPassword').val() == $('#repeatPassword').val()) {
+                            var type = "password";
+                            var data = $('#newPassword').val();
+                            var additionalData = $('#currentPassword').val();
+                            $.ajax({
+                                type: "POST",
+                                url: "/Account/RewriteUserSettings",
+                                data: { type, data, additionalData },
+                                dataType: "text",
+                                success: function (response) {
+                                    if (response == "good") {
+                                        var button = document.getElementById("rewritePassword");
+                                        button.innerHTML = "Изменить";
+                                        Toggle("passwordContainer", "passwordRewriteInputs");
+                                        if (document.getElementById("errorDivPassword").style.display != "none") {
+                                            Toggle("passwordRewriteInputs", "passwordError");
+                                        }
+                                    } else {
+                                        $("#p-passwordError").text(response);
+                                        if (document.getElementById("errorDivPassword").style.display == "none") {
+                                            Toggle("passwordRewriteInputs", "passwordError");
+                                        }
+                                    }
+                                },
+                                error: function (req, status, error) {
+                                    alert(error);
+                                }
+                            });
+                        }
+                        else {
+                            $("#p-passwordError").text("Пароль не изменён, так как новый пороль повторен неверно!");
+                            if (document.getElementById("errorDivPassword").style.display == "none") {
+                                Toggle("passwordRewriteInputs", "passwordError");
+                            }
+                        }
+                    } else {
+                        Toggle("passwordContainer", "passwordRewriteInputs");
+                        if (document.getElementById("errorDivPassword").style.display != "none") {
+                            Toggle("passwordRewriteInputs", "passwordError");
+                        }
+                        var button = document.getElementById("rewritePassword");
+                        button.innerHTML = "Изменить";
+                    }
+                }
+            });
+
+            $('#rewriteName').click(function () {
+                if (document.getElementById("rewriteName").innerHTML == "Изменить") {
+                    var button = document.getElementById("rewriteName");
+                    button.innerHTML = "Сохранить";
+                    $('#newName').val('');
+                    Toggle("nameContainer", "nameRewriteInput");
+                    $('#newName').focus();
+                } else {
+                    if (!isEmpty($('#newName').val())) {
+                        var type = "name";
+                        var data = $('#newName').val();
+                        var additionalData = "";
+                        $.ajax({
+                            type: "POST",
+                            url: "/Account/RewriteUserSettings",
+                            data: { type, data, additionalData },
+                            dataType: "text",
+                            success: function (response) {
+                                if (response == "good") {
+                                    document.getElementById("currentName").innerHTML = data;
+                                    var button = document.getElementById("rewriteName");
+                                    button.innerHTML = "Изменить";
+                                    Toggle("nameContainer", "nameRewriteInput");
+                                }
+                            },
+                            error: function (req, status, error) {
+                                alert(error);
+                            }
+                        });
+                    } else {
+                        Toggle("nameContainer", "nameRewriteInput");
+                        var button = document.getElementById("rewriteName");
+                        button.innerHTML = "Изменить";
+                    }
+                }
+            });
+
+            $('#rewriteSurname').click(function () {
+                if (document.getElementById("rewriteSurname").innerHTML == "Изменить") {
+                    var button = document.getElementById("rewriteSurname");
+                    button.innerHTML = "Сохранить";
+                    $('#newSurname').val('');
+                    Toggle("surnameContainer", "surnameRewriteInput");
+                    $('#newSurname').focus();
+                } else {
+                    if (!isEmpty($('#newSurname').val())) {
+                        var type = "surname";
+                        var data = $('#newSurname').val();
+                        var additionalData = "";
+                        $.ajax({
+                            type: "POST",
+                            url: "/Account/RewriteUserSettings",
+                            data: { type, data, additionalData },
+                            dataType: "text",
+                            success: function (response) {
+                                if (response == "good") {
+                                    document.getElementById("currentSurname").innerHTML = data;
+                                    var button = document.getElementById("rewriteSurname");
+                                    button.innerHTML = "Изменить";
+                                    Toggle("surnameContainer", "surnameRewriteInput");
+                                }
+                            },
+                            error: function (req, status, error) {
+                                alert(error);
+                            }
+                        });
+                    } else {
+                        Toggle("surnameContainer", "surnameRewriteInput");
+                        var button = document.getElementById("rewriteSurname");
+                        button.innerHTML = "Изменить";
+                    }
+                }
+            });
+
+            $('#rewriteMiddleName').click(function () {
+                if (document.getElementById("rewriteMiddleName").innerHTML == "Изменить") {
+                    var button = document.getElementById("rewriteMiddleName");
+                    button.innerHTML = "Сохранить";
+                    $('#newSurname').val('');
+                    Toggle("middleNameContainer", "middleNameRewriteInput");
+                    $('#newSurname').focus();
+                }
+                else {
+                    var type = "middleName";
+                    var data = $('#newSurname').val();
+                    var additionalData = "";
+                    $.ajax({
+                        type: "POST",
+                        url: "/Account/RewriteUserSettings",
+                        data: { type, data, additionalData },
+                        dataType: "text",
+                        success: function (response) {
+                            if (response == "good") {
+                                document.getElementById("currentMiddleName").innerHTML = !isEmpty(data) ? data : "-";
+                                var button = document.getElementById("rewriteMiddleName");
+                                button.innerHTML = "Изменить";
+                                Toggle("middleNameContainer", "middleNameRewriteInput");
+                            }
+                        },
+                        error: function (req, status, error) {
+                            alert(error);
+                        }
+                    });
+                }
+            });
+
+            $('#rewritePhoneNumber').click(function () {
+                if (document.getElementById("rewritePhoneNumber").innerHTML == "Изменить") {
+                    var button = document.getElementById("rewritePhoneNumber");
+                    button.innerHTML = "Сохранить";
+                    $('#newPhoneNumber').val('');
+                    Toggle("phoneNumberContainer", "phoneNumberRewriteInput");
+                    $('#newPhoneNumber').focus();
+                } else {
+                    var type = "phoneNumber";
+                    var data = $('#newPhoneNumber').val();
+                    var additionalData = "";
+                    $.ajax({
+                        type: "POST",
+                        url: "/Account/RewriteUserSettings",
+                        data: { type, data, additionalData },
+                        dataType: "text",
+                        success: function (response) {
+                            if (response == "good") {
+                                document.getElementById("currentPhoneNumber").innerHTML = !isEmpty(data) ? data : "-";
+                                var button = document.getElementById("rewritePhoneNumber");
+                                button.innerHTML = "Изменить";
+                                Toggle("phoneNumberContainer", "phoneNumberRewriteInput");
+                                if (document.getElementById("errorDivPhoneNumber").style.display != "none") {
+                                    Toggle("phoneNumberRewriteInput", "phoneNumberError");
+                                }
+                            } else {
+                                $("#p-phoneNumberError").text(response);
+                                if (document.getElementById("errorDivPhoneNumber").style.display == "none") {
+                                    Toggle("phoneNumberRewriteInput", "phoneNumberError");
+                                }
+                            }
+                        },
+                        error: function (req, status, error) {
+                            alert(error);
+                        }
+                    });
+                }
+            });
+
+
+
+            $('#loginRewriteCancel').click(function () {
+                Toggle("loginContainer", "loginRewriteInput");
+                if (document.getElementById("errorDivLogin").style.display != "none") {
+                    Toggle("loginRewriteInput", "loginError");
+                }
+                var button = document.getElementById("rewriteLogin");
+                button.innerHTML = "Изменить";
+            });
+
+            $('#emailRewriteCancel').click(function () {
+                Toggle("emailContainer", "emailRewriteInput");
+                if (document.getElementById("errorDivEmail").style.display != "none") {
+                    Toggle("emailRewriteInput", "emailError");
+                }
+                var button = document.getElementById("rewriteEmail");
+                button.innerHTML = "Изменить";
+            });
+
+            $('#passwordRewriteCancel').click(function () {
+                Toggle("passwordContainer", "passwordRewriteInputs");
+                if (document.getElementById("errorDivPassword").style.display != "none") {
+                    Toggle("passwordRewriteInputs", "passwordError");
+                }
+                var button = document.getElementById("rewritePassword");
+                button.innerHTML = "Изменить";
+            });
+
+            $('#nameRewriteCancel').click(function () {
+                Toggle("nameContainer", "nameRewriteInput");
+                var button = document.getElementById("rewriteName");
+                button.innerHTML = "Изменить";
+            });
+
+            $('#surnameRewriteCancel').click(function () {
+                Toggle("surnameContainer", "surnameRewriteInput");
+                var button = document.getElementById("rewriteSurname");
+                button.innerHTML = "Изменить";
+            });
+
+            $('#middleNameRewriteCancel').click(function () {
+                Toggle("middleNameContainer", "middleNameRewriteInput");
+                var button = document.getElementById("rewriteMiddleName");
+                button.innerHTML = "Изменить";
+            });
+
+            $('#phoneNumberRewriteCancel').click(function () {
+                Toggle("phoneNumberContainer", "phoneNumberRewriteInput");
+                if (document.getElementById("errorDivPhoneNumber").style.display != "none") {
+                    Toggle("phoneNumberRewriteInput", "phoneNumberError");
+                }
+                var button = document.getElementById("rewritePhoneNumber");
+                button.innerHTML = "Изменить";
+            });
+        });
+
+        function Toggle(container, nameDiv) {
+            $(`.${container}`).siblings()
+                .children(`.${nameDiv}`)
+                .slideUp(928);
+            $(`.${container}`)
+                .children(`.${nameDiv}`)
+                .slideToggle(928);
+        }
+
+        function isEmpty(str) {
+            if (str.trim() == '') 
+                return true;
+    
+            return false;
+        }
+    </script>
 </body>
