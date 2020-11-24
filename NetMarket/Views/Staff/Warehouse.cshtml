@@ -1,0 +1,43 @@
+﻿@model IEnumerable<NetMarket.ViewModels.ProductViewModel>
+@{
+    ViewData["Title"] = "Товары";
+}
+<head>
+    <link rel="stylesheet" href="~/css/warehouse.css" />
+</head>
+<body class="body-warehouse">
+    <h3 class="h3">Список тоавров</h3>
+    <div class="warehouseContainer">
+        <table class="table">
+            <tr>
+                <th class="text-right">ID</th>
+                <th>Название</th>
+                <th class="text-right">Цена</th>
+                <th class="text-center"></th>
+            </tr>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td class="text-right">
+                        @item.Id
+                    </td>
+                    <td class="nameProduct" style="text-decoration: none;">
+                        @Html.ActionLink(item.Name + " (" + item.Color + ")", "Edit", new { item.Id }, new { style = "text-decoration:none;"})
+                    </td>
+                    <td class="text-right priceProduct">
+                        @item.Price.ToString("#  ₽")
+                    </td>
+                    <td class="text-center">
+                        @using (Html.BeginForm("Delete", "Staff"))
+                        {
+                            @Html.Hidden("Id", item.Id)
+                            <input type="submit"
+                                   class="buttonDelete"
+                                   value="Удалить" />
+                        }
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+</body>

@@ -1,0 +1,123 @@
+﻿.edit-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding-top: 28px;
+}
+
+.updateContainer {
+    width: 80%;
+    margin-left: 10%;
+    display: flex;
+    justify-content: space-evenly;
+    align-content: center;
+    margin-bottom: 28px;
+}
+
+.updateContainer input{
+    width: 50%;
+    padding: 5px;
+    border-radius: 5px;
+    outline: none;
+    border: none;
+    font-size: 19px;
+    color: mediumslateblue;
+}
+
+.updateContainer button {
+    width: 155px;
+    padding: 5px;
+    border-radius: 5px;
+    outline: none;
+    border: none;
+    font-size: 19px;
+    color: white;
+    background: mediumslateblue;
+}
+
+.updateContainer button:hover {
+    opacity: 0.67;
+}
+
+.updateContainerPhoto {
+    width: 50%;
+    margin-left: 25%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    margin-bottom: 28px;
+}
+
+.updateContainerPhoto label {
+    width: 60%;
+    margin-left: 20%;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 19px;
+    color: white;
+    background: mediumslateblue;
+    text-align: center;
+    cursor: pointer;
+}
+
+.updateContainerPhoto label:hover {
+    opacity: 0.67;
+}
+
+.div-img {
+    width: 60%;
+    margin-left: 20%;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    border-radius: 5px;
+    background: white;
+}
+
+.div-img img {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 80%;
+    max-height: 80%;
+    margin: auto;
+    transition: transform .4s ease-out;
+}
+
+.buttonSave {
+    width: 128px;
+    margin-top: 9px;
+    border: none;
+    outline: none;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 19px;
+    color: white;
+    background: mediumslateblue;
+    text-align: center;
+    cursor: pointer;
+    align-self: center;
+}
+
+.buttonCancel {
+    width: 128px;
+    margin-top: 9px;
+    border: none;
+    outline: none;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 19px;
+    color: white;
+    background: coral;
+    text-align: center;
+    cursor: pointer;
+    align-self: center;
+}
+
+.updateContainerPhoto button:hover {
+    opacity: 0.67;
+}

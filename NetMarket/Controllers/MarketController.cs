@@ -80,7 +80,7 @@ namespace NetMarket.Controllers
             }
             else
             {
-                return NotFound();
+                return RedirectToAction("Warehouse", "Staff");
             }
         }
 
@@ -235,13 +235,6 @@ namespace NetMarket.Controllers
         [HttpGet]
         [Authorize(Roles = "admin")]
         public IActionResult Users()
-        {
-            return View();
-        }
-
-        [HttpGet]
-        [Authorize(Roles = "admin")]
-        public IActionResult Warehouse()
         {
             return View();
         }

@@ -22,16 +22,16 @@
                             <a style="text-decoration: none;" asp-area="" asp-controller="Market" asp-action="Users">Сотрудники</a>
                         </li>
                         <li>
-                            <a style="text-decoration: none;" asp-area="" asp-controller="Market" asp-action="Warehouse">Товары</a>
+                            <a style="text-decoration: none;" asp-area="" asp-controller="Staff" asp-action="Warehouse">Товары</a>
                         </li>
                     }
                     else if (User.IsInRole("employee"))
                     {
                         <li>
-                            <a style="text-decoration: none;" asp-area="" asp-controller="Market" asp-action="Warehouse">Товары</a>
+                            <a style="text-decoration: none;" asp-area="" asp-controller="Staff" asp-action="Warehouse">Товары</a>
                         </li>
                         <li>
-                            <a style="text-decoration: none;" asp-area="" asp-controller="Market" asp-action="Warehouse">Заказы</a>
+                            <a style="text-decoration: none;" asp-area="" asp-controller="Staff" asp-action="Warehouse">Заказы</a>
                         </li>
                     }
                     else

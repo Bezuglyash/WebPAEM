@@ -1,0 +1,103 @@
+﻿@model NetMarket.ViewModels.ProductViewModel
+@{
+    ViewData["Title"] = "Редактирование товара";
+}
+<head>
+    <link rel="stylesheet" href="~/css/edit.css" />
+</head>
+<body class="body-edit">
+    <div class="edit-container">
+        <div class="updateContainer">
+            <input type="text" value="@Model.Name" readonly="readonly" />
+            <button>Изменить</button>
+        </div>
+        <div class="updateContainer">
+            <input type="text" value="@Model.Company" readonly="readonly" />
+            <button>Изменить</button>
+        </div>
+        <div class="updateContainer">
+            <input type="text" value="@Model.Color" readonly="readonly" />
+            <button>Изменить</button>
+        </div>
+        <div class="updateContainer">
+            <input type="text" value="@Model.Price" readonly="readonly" />
+            <button>Изменить</button>
+        </div>
+        <div class="updateContainer">
+            <input type="text" value="@Model.OperationSystem" readonly="readonly" />
+            <button>Изменить</button>
+        </div>
+        <div class="updateContainer">
+            <input type="text" value="@Model.StorageCard" readonly="readonly" />
+            <button>Изменить</button>
+        </div>
+        <div class="updateContainer">
+            <input type="text" value="@Model.Weight" readonly="readonly" />
+            <button>Изменить</button>
+        </div>
+        <div class="updateContainer">
+            <input type="text" value="@Model.Description" readonly="readonly" />
+            <button>Изменить</button>
+        </div>
+        <div class="updateContainer">
+            <input type="text" value="@Model.HaveInStock" readonly="readonly" />
+            <button>Изменить</button>
+        </div>
+        <form asp-action="Edit" asp-controller="Staff" method="post" enctype="multipart/form-data">
+            <div class="updateContainerPhoto">
+                <label for="file">Изменить фотографию</label>
+                <input id="file" type="file" style="display: none;" name="uploadImage" />
+                <div class="div-img">
+                    <img id="image" src="~/@Model.ImageString" alt="" />
+                </div>
+                <button id="buttonSave" class="buttonSave" style="display: none;" type="submit">Сохранить</button>
+                <button id="buttonCancel" class="buttonCancel" style="display: none;" type="button" onclick="CancelClick()">Отменить</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        window.onload = init;
+        var currentImage = "";
+
+        function init() {
+            //alert("Топчик!");
+        };
+
+        function readURL(input) {
+
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#image').attr('src', e.target.result);
+                };
+
+                reader.readAsDataURL(input.files[0]);
+                var buttonSave = document.getElementById("buttonSave");
+                buttonSave.style.display = "block";
+                var buttonCancel = document.getElementById("buttonCancel");
+                buttonCancel.style.display = "block";
+            }
+        }
+
+        $("#file").change(function () {
+            currentImage = $("#image").attr('src');;
+            readURL(this);
+        });
+
+        function CancelClick() {
+            console.log(currentImage);
+            var input = document.getElementById("file");
+            input.value = '';
+            $('#image').attr('src', currentImage);
+            var buttonSave = document.getElementById("buttonSave");
+            buttonSave.style.display = "none";
+            var buttonCancel = document.getElementById("buttonCancel");
+            buttonCancel.style.display = "none";
+        }
+    </script>
+</body>

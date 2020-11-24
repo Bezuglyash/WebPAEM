@@ -55,6 +55,7 @@ namespace NetMarket.Repository
         {
             return (from order in _netMarketDbContext.Orders
                 where order.User.Login == login
+                orderby order.Id descending 
                 select new OrderViewModel
                 {
                     OrderNumber = order.Id,

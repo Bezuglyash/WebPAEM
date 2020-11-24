@@ -76,16 +76,16 @@ namespace NetMarket.Repository
                 select human).ToList()[0];
         }
 
-        public async Task<string> UpdateAsync(string login, string type, string data, string additionalData)
+        public async Task<string> UpdateAsync(string login, string typeOfUpdate, string data, string additionalData)
         {
             string response;
             if (additionalData == null)
             {
-                response = _actionsUpdate[type](login, data);
+                response = _actionsUpdate[typeOfUpdate](login, data);
             }
             else
             {
-                response = _actionsUpdate[type](login, new List<string>
+                response = _actionsUpdate[typeOfUpdate](login, new List<string>
                 {
                     data,
                     additionalData
