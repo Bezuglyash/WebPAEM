@@ -142,12 +142,13 @@
                             @if (item.HaveInStock)
                             {
                                 <p>Есть в наличии</p>
+                                <p><button type="button" id="addToBasket" value="@item.Id" onclick="AddToBasketClick(@item.Id)">Добавить в корзину</button></p>
                             }
                             else
                             {
                                 <p>Нет в наличии</p>
+                                <p><button id="addToBasket" value="@item.Id" onclick="AddToBasketClick(@item.Id)" disabled="disabled" style="opacity: 0.67;">Добавить в корзину</button></p>
                             }
-                            <p><button type="button" id="addToBasket" value="@item.Id" onclick="AddToBasketClick(@item.Id)">Добавить в корзину</button></p>
                         </form>
                     </div>
                 </li>

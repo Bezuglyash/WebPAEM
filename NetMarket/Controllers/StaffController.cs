@@ -48,6 +48,7 @@ namespace NetMarket.Controllers
             var product = _productRepository.GetProduct(id);
             return View(new ProductViewModel
             {
+                Id = id,
                 Name = product.Name,
                 Company = product.Company,
                 Color = product.Color,
@@ -56,7 +57,8 @@ namespace NetMarket.Controllers
                 StorageCard = product.StorageCard,
                 Weight = product.Weight,
                 Description = product.Description,
-                ImageString = product.ImageString
+                ImageString = product.ImageString,
+                HaveInStock = product.HaveInStock
             });
         }
 
@@ -82,6 +84,13 @@ namespace NetMarket.Controllers
                 System.IO.File.Delete($"wwwroot/{pastImageString}");
             }
             return RedirectToAction("Edit", id);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditData(int phoneId, string typeOfData, string newData)
+        {
+            await _productRepository.UpdateAsync(phoneId, typeOfData, newData);
+            return StatusCode(200);
         }
 
         [Authorize(Roles = "admin, employee")]

@@ -15,7 +15,18 @@
     margin-bottom: 28px;
 }
 
-.updateContainer input{
+.updateContainer p {
+    width: 191px;
+    color: #2F4F4F;
+    font-size: 19px;
+    font-family: cursive;
+    font-weight: bolder;
+    padding: 5px;
+    align-self: flex-start;
+    margin: 0;
+}
+
+.updateContainer input, .updateContainer select {
     width: 50%;
     padding: 5px;
     border-radius: 5px;
@@ -23,6 +34,7 @@
     border: none;
     font-size: 19px;
     color: mediumslateblue;
+    align-self: center;
 }
 
 .updateContainer button {
@@ -120,4 +132,23 @@
 
 .updateContainerPhoto button:hover {
     opacity: 0.67;
+}
+
+@media screen and (max-width: 991px) {
+    .updateContainer {
+        flex-direction: column;
+    }
+
+    .updateContainer p {
+        width: 100%;
+        align-self: center;
+        text-align: left;
+    }
+
+    .updateContainer input, .updateContainer select {
+        width: 100%;
+        align-self: center;
+        text-align: left;
+        margin-bottom: 12px; 
+    }
 }

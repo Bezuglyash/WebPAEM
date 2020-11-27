@@ -115,7 +115,7 @@ namespace NetMarket.Repository
 
         private Product ExistenceUpdate(Product product, object newData)
         {
-            product.HaveInStock = (bool)newData;
+            product.HaveInStock = (string)newData == "Есть в наличии";
             return product;
         }
 

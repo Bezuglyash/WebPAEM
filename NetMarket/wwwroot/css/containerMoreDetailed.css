@@ -185,6 +185,25 @@
     }
 }
 
+@media screen and (max-width: 698px) {
+    .div-more-container {
+        top: 2.5%;
+        height: 95%;
+    }
+
+    #button {
+        width: 28%;
+    }
+
+    .div-img-more {
+        border-radius: 0;
+    }
+
+    .div-specifications {
+        border-radius: 0 0 28px 28px;
+    }
+}
+
 @media screen and (max-height: 728px) {
     .div-more-container {
         grid-template-areas: "p" "div";
@@ -230,7 +249,7 @@
     }
 }
 
-@media screen and (max-height: 428px) {
+@media screen and (max-height: 455px) {
     .div-more-container {
         display: none;
     }
