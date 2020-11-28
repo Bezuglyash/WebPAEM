@@ -46,7 +46,11 @@ namespace NetMarket.Controllers
             if (ModelState.IsValid)
             {
                 await Authenticate(user);
-                return RedirectToAction("Phone", "Market");
+                if (user.RoleId == 2)
+                {
+                    return RedirectToAction("Phone", "Market");
+                }
+                return RedirectToAction("Warehouse", "Staff");
             }
 
             return View(loginViewModel);

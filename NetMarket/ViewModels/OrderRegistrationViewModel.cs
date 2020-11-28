@@ -24,6 +24,6 @@ namespace NetMarket.ViewModels
         [Required(ErrorMessage = "Это поле обязательно для заполнения!")]
         public string Address { get; set; }
 
-        public string Comment { get; set; }
+        public string? Comment { get; set; }
     }
 }
