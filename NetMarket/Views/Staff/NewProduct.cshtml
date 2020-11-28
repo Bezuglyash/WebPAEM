@@ -1,0 +1,89 @@
+﻿@model NetMarket.ViewModels.NewProductViewModel
+@{
+    ViewData["Title"] = "Добавление товара";
+}
+<head>
+    <link rel="stylesheet" href="~/css/productData.css" />
+    <link rel="stylesheet" href="~/css/newProduct.css" />
+</head>
+<body class="body-edit">
+    <form asp-action="NewProduct" asp-controller="Staff" method="post" enctype="multipart/form-data">
+        <div class="edit-container">
+            <div class="updateContainer">
+                <p>Название</p>
+                <input id="name" type="text" asp-for="Name" class="newProductInput" style="border: 1px solid blue;" required autocomplete="new-password"/>
+            </div>
+            <div class="updateContainer">
+                <p>Компания</p>
+                <input id="company" type="text" asp-for="Company" class="newProductInput" style="border: 1px solid blue;" required autocomplete="new-password"/>
+            </div>
+            <div class="updateContainer">
+                <p>Цвет</p>
+                <input id="color" type="text" asp-for="Color" class="newProductInput" style="border: 1px solid blue;" required autocomplete="new-password"/>
+            </div>
+            <div class="updateContainer">
+                <p>Цена (₽)</p>
+                <input id="price" type="number" asp-for="Price" class="newProductInput" style="border: 1px solid blue;" required autocomplete="new-password"/>
+            </div>
+            <div class="updateContainer">
+                <p>ОС</p>
+                <input id="operationSystem" type="text" asp-for="OperationSystem" class="newProductInput" style="border: 1px solid blue;" required autocomplete="new-password"/>
+            </div>
+            <div class="updateContainer">
+                <p>Карта памяти (ГБ)</p>
+                <input id="storageCard" type="number" asp-for="StorageCard" class="newProductInput" style="border: 1px solid blue;" required autocomplete="new-password"/>
+            </div>
+            <div class="updateContainer">
+                <p>Вес (г)</p>
+                <input id="weight" type="number" asp-for="Weight" class="newProductInput" style="border: 1px solid blue;" required autocomplete="new-password"/>
+            </div>
+            <div class="updateContainer">
+                <p>Описание</p>
+                <input id="description" type="text" asp-for="Description" maxlength="55" class="newProductInput" style="border: 1px solid blue;" required autocomplete="new-password"/>
+            </div>
+            <div class="updateContainer">
+                <p>Наличие</p>
+                <select id="selectExistence" class="newProductInput" style="border: 1px solid blue;" asp-for="Existence" required>
+                    <option selected="selected">Есть в наличии</option>
+                    <option>Нет в наличии</option>
+                </select>
+            </div>
+            <div class="updateContainerPhoto">
+                <span class="errorImage" asp-validation-for="Image"> </span>
+                <label for="file">Добавить фотографию</label>
+                <input id="file" type="file" style="display: none;" asp-for="Image" />
+                <div class="div-img">
+                    <img id="image" alt="" />
+                </div>
+            </div>
+            <button class="buttonAdd" type="submit" name="form_auth_submit">Сохранить</button>
+        </div>
+    </form>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        window.onload = init;
+
+        function init() {
+            //alert("Топчик!");
+        };
+
+        function readURL(input) {
+
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#image').attr('src', e.target.result);
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        $("#file").change(function () {
+            readURL(this);
+        });
+    </script>
+</body>

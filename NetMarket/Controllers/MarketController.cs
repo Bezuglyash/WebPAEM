@@ -31,32 +31,32 @@ namespace NetMarket.Controllers
             //_httpContextAccessor = httpContextAccessor;
             if (_productRepository.GetProducts().Count == 0)
             {
-                _productRepository.AddProduct("Apple", "Apple iPhone 11", 73990, 256, "Белый", "iOS", 194,
-                    "Дорогой, но топовый телефон!", true, "iPhoneWhite11.png");
+                Task.Run(async () => await _productRepository.AddProductAsync("Apple", "Apple iPhone 11", 73990, 256, "Белый", "iOS", 194,
+                    "Дорогой, но топовый телефон!", "Есть в наличии", "iPhoneWhite11.png"));
 
-                _productRepository.AddProduct("Apple", "Apple iPhone 11", 73990, 256, "Жёлтый", "iOS", 194,
-                    "Дорогой, но топовый телефон!", true, "iPhoneYellow11.png");
+                Task.Run(async () => await _productRepository.AddProductAsync("Apple", "Apple iPhone 11", 73990, 256, "Жёлтый", "iOS", 194,
+                    "Дорогой, но топовый телефон!", "Есть в наличии", "iPhoneYellow11.png"));
 
-                _productRepository.AddProduct("Apple", "Apple iPhone 7", 26990, 32, "Золотистый", "iOS", 138,
-                    "Староват, но цена поражает!", true, "iPhoneGold7.png");
+                Task.Run(async () => await _productRepository.AddProductAsync("Apple", "Apple iPhone 7", 26990, 32, "Золотистый", "iOS", 138,
+                    "Староват, но цена поражает!", "Есть в наличии", "iPhoneGold7.png"));
 
-                _productRepository.AddProduct("Samsung", "Samsung Galaxy Z Fold2", 179990, 256, "Чёрный", "Android", 282,
-                    "Очень дорогой, но, удвительно, не iPhone!", true, "GalaxyZFold2Black.png");
+                Task.Run(async () => await _productRepository.AddProductAsync("Samsung", "Samsung Galaxy Z Fold2", 179990, 256, "Чёрный", "Android", 282,
+                    "Очень дорогой, но, удвительно, не iPhone!", "Есть в наличии", "GalaxyZFold2Black.png"));
 
-                _productRepository.AddProduct("Samsung", "Samsung Galaxy M21", 15990, 64, "Синий", "Android", 188,
-                    "Недорогой, хороший, ещё и Samsung - отличный вариант для студента!", true, "GalaxyM21Blue.png");
+                Task.Run(async () => await _productRepository.AddProductAsync("Samsung", "Samsung Galaxy M21", 15990, 64, "Синий", "Android", 188,
+                    "Недорогой, хороший, ещё и Samsung - отличный вариант для студента!", "Есть в наличии", "GalaxyM21Blue.png"));
 
-                _productRepository.AddProduct("Samsung", "Samsung Galaxy M21", 15990, 64, "Чёрный", "Android", 188,
-                    "Недорогой, хороший, ещё и Samsung - отличный вариант для студента!", true, "GalaxyM21Black.png");
+                Task.Run(async () => await _productRepository.AddProductAsync("Samsung", "Samsung Galaxy M21", 15990, 64, "Чёрный", "Android", 188,
+                    "Недорогой, хороший, ещё и Samsung - отличный вариант для студента!", "Есть в наличии", "GalaxyM21Black.png"));
 
-                _productRepository.AddProduct("Honor", "Honor 10 Lite", 12990, 64, "Синий", "Android", 162,
-                    "Бюждетный и хороший вариант! Сами таким пользуемся)", true, "Honor10LiteBlue.png");
+                Task.Run(async () => await _productRepository.AddProductAsync("Honor", "Honor 10 Lite", 12990, 64, "Синий", "Android", 162,
+                    "Бюждетный и хороший вариант! Сами таким пользуемся)", "Есть в наличии", "Honor10LiteBlue.png"));
 
-                _productRepository.AddProduct("Honor", "Honor 10 Lite", 12990, 64, "Чёрный", "Android", 162,
-                    "Бюждетный и хороший вариант!", true, "Honor10LiteBlack.png");
+                Task.Run(async () => await _productRepository.AddProductAsync("Honor", "Honor 10 Lite", 12990, 64, "Чёрный", "Android", 162,
+                    "Бюждетный и хороший вариант!", "Есть в наличии", "Honor10LiteBlack.png"));
 
-                _productRepository.AddProduct("Honor", "Honor 30 Pro Plus", 54990, 256, "Зелёный", "Android", 190,
-                    "Такой дорогой Honor?", true, "Honor30ProPlusGreen.png");
+                Task.Run(async () => await _productRepository.AddProductAsync("Honor", "Honor 30 Pro Plus", 54990, 256, "Зелёный", "Android", 190,
+                    "Такой дорогой Honor?", "Есть в наличии", "Honor30ProPlusGreen.png"));
             }
         }
 

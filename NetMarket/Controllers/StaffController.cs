@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using NetMarket.Models;
 using NetMarket.Repository;
 using NetMarket.ViewModels;
 
@@ -23,7 +24,7 @@ namespace NetMarket.Controllers
             _productRepository = productRepository;
             _appEnvironment = appEnvironment;
         }
-
+        [HttpGet]
         [Authorize(Roles = "admin, employee")]
         public IActionResult Warehouse()
         {
@@ -40,6 +41,37 @@ namespace NetMarket.Controllers
                 });
             }
             return View(productsViewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Warehouse(string? textSearch, int? idWhichProductMustDelete)
+        {
+            if (idWhichProductMustDelete == null)
+            {
+                List<Product> products;
+                var productsViewModel = new List<ProductViewModel>();
+                if (textSearch != null)
+                {
+                    products = _productRepository.GetSearchProducts(textSearch);
+                }
+                else
+                {
+                    products = _productRepository.GetProducts();
+                }
+                foreach (var product in products)
+                {
+                    productsViewModel.Add(new ProductViewModel
+                    {
+                        Id = product.Id,
+                        Name = product.Name,
+                        Price = product.Price,
+                        Color = product.Color
+                    });
+                }
+                return View(productsViewModel);
+            }
+            await _productRepository.DeleteProductAsync((int)idWhichProductMustDelete);
+            return RedirectToAction("Warehouse");
         }
 
         [Authorize(Roles = "admin, employee")]
@@ -93,10 +125,30 @@ namespace NetMarket.Controllers
             return StatusCode(200);
         }
 
-        [Authorize(Roles = "admin, employee")]
-        public string Delete(int id)
+        [HttpGet]
+        public IActionResult NewProduct()
         {
-            return "View()";
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> NewProduct(NewProductViewModel newProductViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                string path = "/" + newProductViewModel.Image.FileName;
+                using (var fileStream = new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create))
+                {
+                    await newProductViewModel.Image.CopyToAsync(fileStream);
+                }
+
+                await _productRepository.AddProductAsync(newProductViewModel.Company, newProductViewModel.Name,
+                    newProductViewModel.Price, newProductViewModel.StorageCard, newProductViewModel.Color,
+                    newProductViewModel.OperationSystem, newProductViewModel.Weight, newProductViewModel.Description,
+                    newProductViewModel.Existence, newProductViewModel.Image.FileName);
+                return RedirectToAction("Warehouse");
+            }
+            return View(newProductViewModel);
         }
     }
 }

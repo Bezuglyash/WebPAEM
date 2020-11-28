@@ -1,0 +1,38 @@
+﻿.newProductInput {
+    width: 70%;
+}
+
+.buttonAdd {
+    width: 128px;
+    align-self: center;
+    font-size: 19px;
+    padding: 5px;
+    text-align: center;
+    color: white;
+    background: #6B8E23;
+    outline: none;
+    border: none;
+    border-radius: 5px;
+}
+
+.buttonAdd:hover {
+    opacity: 0.67;
+}
+
+.errorImage {
+    width: 428px;
+    font-size: 19px;
+    color: red;
+    text-align: center;
+    align-self: center;
+    margin-bottom: 9px; 
+}
+
+@media screen and (max-width: 991px) {
+    .newProductInput {
+        width: 100%;
+        align-self: center;
+        text-align: left;
+        margin-bottom: 12px;
+    }
+}
