@@ -268,7 +268,7 @@ body {
     margin-top: 109px;
 }
 
-.body-phone, .body-cart, .body-orderComplete, .body-myOrders, .body-Settings, .body-warehouse, .body-edit {
+.body-phone, .body-cart, .body-orderComplete, .body-myOrders, .body-Settings, .body-warehouse, .body-edit, .body-employees {
     margin-top: 67px;
     opacity: 1;
 }
@@ -346,7 +346,7 @@ body {
         margin-top: 240px;
     }
 
-    .body-phone, .body-cart, .body-orderComplete, .body-myOrders, .body-Settings, .body-warehouse, .body-edit {
+    .body-phone, .body-cart, .body-orderComplete, .body-myOrders, .body-Settings, .body-warehouse, .body-edit, .body-employees {
         margin-top: 219px;
     }
 }

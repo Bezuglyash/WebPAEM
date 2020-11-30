@@ -53,22 +53,23 @@ namespace NetMarket.Repository
 
         public List<OrderViewModel> GetAllUserOrders(string login)
         {
-            return (from order in _netMarketDbContext.Orders
+            var test = (from order in _netMarketDbContext.Orders
                 where order.User.Login == login
-                orderby order.Id descending 
+                orderby order.Id descending
                 select new OrderViewModel
                 {
                     OrderNumber = order.Id,
-                    CustomerFullName = order.Surname + " " + order.Name + " " + order.MiddleName,
+                    CustomerFullName = order.MiddleName != null ? order.Surname + " " + order.Name + " " + order.MiddleName : order.Surname + " " + order.Name,
                     Address = order.Address,
                     OrderDate = order.OrderTime.ToShortDateString() + " в " + order.OrderTime.ToShortTimeString(),
                     Sum = order.Sum,
                     Status = (from st in _netMarketDbContext.OrdersStatus
-                              join ord in _netMarketDbContext.Orders on st.Id equals ord.OrderStatusId
-                              where st.Id == order.OrderStatusId
-                              select st.Status).ToList()[0],
+                        join ord in _netMarketDbContext.Orders on st.Id equals ord.OrderStatusId
+                        where st.Id == order.OrderStatusId
+                        select st.Status).ToList()[0],
                     Comment = order.Comment ?? "-"
                 }).ToList();
+            return test;
         }
 
         public List<ProductInOrderViewModel> GetProductsInOrder(int id)
@@ -84,7 +85,8 @@ namespace NetMarket.Repository
                         Id = product.Id,
                         Name = product.Name,
                         Price = product.Price,
-                        ImageString = product.ImageString
+                        ImageString = product.ImageString,
+                        HaveInStock = product.HaveInStock
 
                     }).ToList();
                 _cache.Set(id, list, new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromMinutes(55)));

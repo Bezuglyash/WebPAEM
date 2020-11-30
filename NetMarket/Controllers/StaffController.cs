@@ -14,16 +14,43 @@ namespace NetMarket.Controllers
 {
     public class StaffController : Controller
     {
-        private UserRepository _userRepository;
+        private PeopleRepository _peopleRepository;
         private ProductRepository _productRepository;
         IWebHostEnvironment _appEnvironment;
 
-        public StaffController(UserRepository userRepository, ProductRepository productRepository, IWebHostEnvironment appEnvironment)
+        public StaffController(PeopleRepository peopleRepository, ProductRepository productRepository, IWebHostEnvironment appEnvironment)
         {
-            _userRepository = userRepository;
+            _peopleRepository = peopleRepository;
             _productRepository = productRepository;
             _appEnvironment = appEnvironment;
         }
+
+        [HttpGet]
+        [Authorize(Roles = "admin")]
+        public IActionResult Employees()
+        {
+            return View(_peopleRepository.GetEmployees());
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "admin")]
+        public IActionResult Employees(string? textSearch)
+        {
+            if (textSearch != null)
+            {
+                return View(_peopleRepository.GetEmployees(textSearch));
+            }
+            return RedirectToAction("Employees");
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> UpdateRole(Guid id, string rewriteRole)
+        {
+            await _peopleRepository.EmployeeRoleUpdateAsync(id, rewriteRole == "Администратор" ? 1 : 3);
+            return StatusCode(200);
+        }
+
         [HttpGet]
         [Authorize(Roles = "admin, employee")]
         public IActionResult Warehouse()
@@ -44,6 +71,7 @@ namespace NetMarket.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin, employee")]
         public async Task<IActionResult> Warehouse(string? textSearch, int? idWhichProductMustDelete)
         {
             if (idWhichProductMustDelete == null)
@@ -95,6 +123,7 @@ namespace NetMarket.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin, employee")]
         public async Task<IActionResult> Edit(IFormFile uploadImage)
         {
             var addressBar = HttpContext.Request.Path.ToString();
@@ -119,6 +148,7 @@ namespace NetMarket.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin, employee")]
         public async Task<IActionResult> EditData(int phoneId, string typeOfData, string newData)
         {
             await _productRepository.UpdateAsync(phoneId, typeOfData, newData);
@@ -126,12 +156,14 @@ namespace NetMarket.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "admin, employee")]
         public IActionResult NewProduct()
         {
             return View();
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin, employee")]
         public async Task<IActionResult> NewProduct(NewProductViewModel newProductViewModel)
         {
             if (ModelState.IsValid)

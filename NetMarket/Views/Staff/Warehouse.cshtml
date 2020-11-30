@@ -9,7 +9,7 @@
     <h3 class="h3">Список тоавров</h3>
     <div class="search">
         <form asp-action="Warehouse" asp-controller="Staff" method="post" enctype="multipart/form-data">
-            <input type="text" placeholder="Поиск товара..." name="textSearch">
+            <input type="text" placeholder="Поиск товаров..." name="textSearch">
             <button type="submit"></button>
         </form>
     </div>
@@ -31,7 +31,7 @@
                         @Html.ActionLink(item.Name + " (" + item.Color + ")", "Edit", new { item.Id }, new { style = "text-decoration:none;"})
                     </td>
                     <td class="text-right priceProduct">
-                        @item.Price.ToString("#  ₽")
+                        @item.Price ₽
                     </td>
                     <td class="text-center">
                         <form asp-action="Warehouse" asp-controller="Staff">

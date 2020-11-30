@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NetMarket.Models;
@@ -15,15 +14,15 @@ namespace NetMarket.Controllers
 {
     public class MarketController : Controller
     {
-        private UserRepository _userRepository;
+        private PeopleRepository _peopleRepository;
         private ProductRepository _productRepository;
         private ProductInBasketRepository _productInBasketRepository;
         private OrderRepository _orderRepository;
         private readonly ILogger<MarketController> _logger;
 
-        public MarketController(UserRepository userRepository, ProductRepository productRepository, ProductInBasketRepository productInBasketRepository, OrderRepository orderRepository, ILogger<MarketController> logger)
+        public MarketController(PeopleRepository peopleRepository, ProductRepository productRepository, ProductInBasketRepository productInBasketRepository, OrderRepository orderRepository, ILogger<MarketController> logger)
         {
-            _userRepository = userRepository;
+            _peopleRepository = peopleRepository;
             _productRepository = productRepository;
             _productInBasketRepository = productInBasketRepository;
             _orderRepository = orderRepository;
@@ -170,7 +169,7 @@ namespace NetMarket.Controllers
                     return RedirectToAction("OrderRegistrationComplete", "Market");
                 }
                 sum = _productInBasketRepository.GetPriceSumProductsInCartForAuthorizedUser(HttpContext.User.Identity.Name);
-                var userId = _userRepository.GetUserId(HttpContext.User.Identity.Name);
+                var userId = _peopleRepository.GetUserId(HttpContext.User.Identity.Name);
                 productsId = await _productInBasketRepository.DeleteProductsInBasketForAuthorizedUserAsync(HttpContext.User.Identity.Name);
                 await _orderRepository.AddNewOrderAsync(userId,
                     DateTime.Now,
@@ -198,7 +197,7 @@ namespace NetMarket.Controllers
         {
             if (HttpContext.User.Identity.Name != null)
             {
-                var user = _userRepository.GetUser(HttpContext.User.Identity.Name);
+                var user = _peopleRepository.GetUser(HttpContext.User.Identity.Name);
                 var userViewModel = new UserInOrderRegistrationViewModel
                 {
                     Name = user.Name,
@@ -232,13 +231,6 @@ namespace NetMarket.Controllers
             return Json(_orderRepository.GetProductsInOrder(orderNumber));
         }
 
-        [HttpGet]
-        [Authorize(Roles = "admin")]
-        public IActionResult Users()
-        {
-            return View();
-        }
-
         [HttpPost]
         public async Task AddToBasket(int productId)
         {
@@ -250,7 +242,7 @@ namespace NetMarket.Controllers
             }
             else
             {
-                await _productInBasketRepository.AddProductInBasketForAuthorizedUserAsync(HttpContext.User.Identity.Name, _userRepository.GetUserId(HttpContext.User.Identity.Name), productId);
+                await _productInBasketRepository.AddProductInBasketForAuthorizedUserAsync(HttpContext.User.Identity.Name, _peopleRepository.GetUserId(HttpContext.User.Identity.Name), productId);
             }
         }
 

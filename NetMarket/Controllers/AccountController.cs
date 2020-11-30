@@ -16,12 +16,12 @@ namespace NetMarket.Controllers
 {
     public class AccountController : Controller
     {
-        private UserRepository _userRepository;
+        private PeopleRepository _peopleRepository;
         private readonly ILogger<AccountController> _logger;
 
-        public AccountController(UserRepository userRepository, ILogger<AccountController> logger)
+        public AccountController(PeopleRepository peopleRepository, ILogger<AccountController> logger)
         {
-            _userRepository = userRepository;
+            _peopleRepository = peopleRepository;
             _logger = logger;
         }
 
@@ -37,7 +37,7 @@ namespace NetMarket.Controllers
         {
             _logger.LogInformation(loginViewModel.Login);
             _logger.LogInformation(loginViewModel.Password);
-            User user = _userRepository.CheckData(loginViewModel.Login, Encryption.Encryption.GetHash(loginViewModel.Password));
+            People user = _peopleRepository.CheckData(loginViewModel.Login, Encryption.Encryption.GetHash(loginViewModel.Password));
             if (user == null)
             {
                 ModelState.AddModelError("", "Неправильный логин или пароль!");
@@ -65,14 +65,14 @@ namespace NetMarket.Controllers
         [HttpPost]
         public IActionResult Registration(RegisterViewModel registerViewModel)
         {
-            if (!_userRepository.IsUniqueLogin(registerViewModel.Login, registerViewModel.Email))
+            if (!_peopleRepository.IsUniqueLogin(registerViewModel.Login, registerViewModel.Email))
             {
                 ModelState.AddModelError("", "Логин или Email уже занят!");
             }
 
             if (ModelState.IsValid)
             {
-                _userRepository.AddUser(registerViewModel.Login, registerViewModel.Email, Encryption.Encryption.GetHash(registerViewModel.Password), registerViewModel.Name,
+                _peopleRepository.AddHuman(registerViewModel.Login, registerViewModel.Email, Encryption.Encryption.GetHash(registerViewModel.Password), registerViewModel.Name,
                     registerViewModel.Surname, registerViewModel.MiddleName, registerViewModel.PhoneNumber, 2);
                 return RedirectToAction("Phone", "Market");
             }
@@ -80,7 +80,7 @@ namespace NetMarket.Controllers
             return View(registerViewModel);
         }
 
-        private async Task Authenticate(User user)
+        private async Task Authenticate(People user)
         {
             // создаем один claim
             var claims = new List<Claim>
@@ -161,7 +161,7 @@ namespace NetMarket.Controllers
         [HttpGet]
         public IActionResult Settings()
         {
-            var user = _userRepository.GetUser(HttpContext.User.Identity.Name);
+            var user = _peopleRepository.GetUser(HttpContext.User.Identity.Name);
             return View(new UserSettingsViewModel
             {
                 Login = user.Login,
@@ -176,7 +176,7 @@ namespace NetMarket.Controllers
         [HttpPost]
         public async Task<string> RewriteUserSettings(string type, string data, string additionalData)
         {
-            string response = await _userRepository.UpdateAsync(HttpContext.User.Identity.Name, type, data, additionalData);
+            string response = await _peopleRepository.UpdateAsync(HttpContext.User.Identity.Name, type, data, additionalData);
             if (type == "login" && response == "good")
             {
                 await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);

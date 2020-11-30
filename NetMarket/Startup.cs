@@ -28,7 +28,7 @@ namespace NetMarket
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
 
-            services.AddTransient<UserRepository>();
+            services.AddTransient<PeopleRepository>();
             services.AddTransient<ProductRepository>();
             services.AddTransient<ProductInBasketRepository>();
             services.AddTransient<OrderRepository>();

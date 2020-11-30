@@ -1,0 +1,133 @@
+﻿@model IEnumerable<NetMarket.ViewModels.Employee.EmployeeViewModel>
+@{
+    ViewData["Title"] = "Сотрудники";
+}
+<head>
+    <link rel="stylesheet" href="~/css/employees.css" />
+</head>
+<body id="employeesList" class="body-employees">
+    <h3 class="h3">Сотрудники</h3>
+    <div class="search">
+        <form asp-action="Employees" asp-controller="Staff" method="post" enctype="multipart/form-data">
+            <input type="text" placeholder="Поиск сотрудников..." name="textSearch">
+            <button type="submit"></button>
+        </form>
+    </div>
+    <div class="employeesContainer">
+        <table class="table">
+            <tr>
+                <th class="text-center">Полное имя</th>
+                <th class="text-center">Email</th>
+                <th class="text-center">Номер телефона</th>
+                <th class="text-center">Права доступа</th>
+            </tr>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td class="text-center nameEmployee">
+                        @item.FullName
+                    </td>
+                    <td class="text-center email" style="text-decoration: none;">
+                        @item.Email
+                    </td>
+                    <td class="text-center phoneNumber">
+                        @item.PhoneNumber
+                    </td>
+                    <td class="text-center">
+                        <select id="@item.Id" class="role">
+                            @if (item.Role == 1)
+                            {
+                                <option selected="selected">Администратор</option>
+                                <option>Сотрудник</option>
+                            }
+                            else
+                            {
+                                <option>Администратор</option>
+                                <option selected="selected">Сотрудник</option>
+                            }
+                        </select>
+                    </td>
+                </tr>
+            }
+        </table>
+        <a class="add" style="text-decoration: none;" asp-action="NewProduct" asp-controller="Staff">Добавить сотрудника</a>
+    </div>
+    <div id="editContainer" class="editContainer" style="display: none;">
+        <div id="editData" class="editData">
+            <p class="pRole">Права доступа будут изменены!</p>
+            <button class="buttonSave" onclick="SaveClick()" style="outline: none;">Сохранить</button>
+            <button class="buttonCancel" onclick="CancelClick()" style="outline: none;">Отменить</button>
+        </div>
+    </div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        window.onload = init;
+        var id;
+        var rewriteRole = "";
+        var isOpen = false;
+
+        function init() {
+            //alert("Топчик!");
+        };
+
+        document.querySelector("select").addEventListener('change',
+            function(e) {
+                console.log(this.id.toString());
+                id = this.id;
+                rewriteRole = e.target.value;
+                $(".editContainer").fadeIn();
+                $("#editData").focus();
+            });
+
+        $(document).mouseup(function(e) {
+            if (document.getElementById('editContainer').style.display != "none") {
+                var divEditData = $("#editData");
+                console.log(isOpen.toString());
+                if (!divEditData.is(e.target) && divEditData.has(e.target).length === 0) {
+                    if (isOpen) {
+                        if (rewriteRole == "Сотрудник") {
+                            $(`#${id}`).val('Администратор');
+                        } else {
+                            $(`#${id}`).val('Сотрудник');
+                        }
+                        Standard();
+                    } else {
+                        isOpen = true;
+                    }
+                }
+            }
+        });
+
+        function SaveClick() {
+            $.ajax({
+                type: "POST",
+                url: "/Staff/UpdateRole",
+                data: { id, rewriteRole },
+                success: function() {
+                },
+                error: function(req, status, error) {
+                    alert(error);
+                }
+            });
+            Standard();
+        }
+
+        function CancelClick() {
+            if (rewriteRole == "Сотрудник") {
+                $(`#${id}`).val('Администратор');
+            } else {
+                $(`#${id}`).val('Сотрудник');
+            }
+            Standard();
+        }
+
+        function Standard() {
+            $(".editContainer").fadeOut();
+            id = null;
+            rewriteRole = "";
+            isOpen = false;
+        }
+    </script>
+</body>
