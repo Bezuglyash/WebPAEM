@@ -14,7 +14,7 @@
                 <li></li>
             </ul>
         </div>
-        
+
         <span class="span-error" asp-validation-for="Login"> </span>
         <input type="text" style="border-radius: 9px;" placeholder="Логин" asp-for="Login" required />
 
@@ -34,10 +34,11 @@
         <input type="text" style="border-radius: 9px;" placeholder="Фамилия" asp-for="Surname" required />
 
         <span class="span-error" asp-validation-for="MiddleName"> </span>
-        <input type="text" style="border-radius: 9px;" placeholder="Отчество" asp-for="MiddleName"/>
+        <input type="text" style="border-radius: 9px;" placeholder="Отчество" asp-for="MiddleName" />
 
-        <input type="text" style="border-radius: 9px;" placeholder="Номер телефона" asp-for="PhoneNumber"/>
+        <span class="span-error" asp-validation-for="PhoneNumber"> </span>
+        <input type="text" style="border-radius: 9px;" placeholder="Номер телефона" asp-for="PhoneNumber" />
 
-        <button class="form_auth_button" style="border-radius: 9px;" type="submit" name="form_auth_submit">Зарегистрироваться</button>
+        <button class="form_auth_button" style="border-radius: 9px; outline: none;" type="submit" name="form_auth_submit">Зарегистрироваться</button>
     </form>
 </body>

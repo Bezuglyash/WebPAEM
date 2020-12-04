@@ -51,100 +51,67 @@
     font-weight: bolder;
 }
 
-#fullNameRow {
-    grid-area: fullNameRow;
+#fullNameRow, #addressRow, #dateRow, #sumRow, #statusRow, #commentRow {
     color: #2F4F4F;
     font-size: 19px;
     font-family: cursive;
     font-weight: bolder;
+}
+
+#fullName, #address, #date, #sum, .status, #comment {
+    font-size: 19px;
+    text-align: center;
+    font-weight: bolder;
+    color: mediumslateblue;
+}
+
+#fullNameRow {
+    grid-area: fullNameRow;
 }
 
 #fullName {
     grid-area: fullName;
-    font-size: 19px;
-    text-align: center;
-    font-weight: bolder;
-    color: mediumslateblue;
 }
 
 #addressRow {
     grid-area: addressRow;
-    color: #2F4F4F;
-    font-size: 19px;
-    font-family: cursive;
-    font-weight: bolder;
 }
 
 #address {
     grid-area: address;
-    font-size: 19px;
-    text-align: center;
-    font-weight: bolder;
-    color: mediumslateblue;
 }
 
 #dateRow {
     grid-area: dateRow;
-    color: #2F4F4F;
-    font-size: 19px;
-    font-family: cursive;
-    font-weight: bolder;
 }
 
 #date {
     grid-area: date;
-    font-size: 19px;
-    text-align: center;
-    font-weight: bolder;
-    color: mediumslateblue;
 }
 
 #sumRow {
     grid-area: sumRow;
-    color: #2F4F4F;
-    font-size: 19px;
-    font-family: cursive;
-    font-weight: bolder;
 }
 
 #sum {
     grid-area: sum;
-    font-size: 19px;
-    text-align: center;
-    font-weight: bolder;
-    color: mediumslateblue;
 }
 
 #statusRow {
     grid-area: statusRow;
-    color: #2F4F4F;
-    font-size: 19px;
-    font-family: cursive;
-    font-weight: bolder;
 }
 
-#status {
+.status {
     grid-area: status;
-    font-size: 19px;
-    text-align: center;
-    font-weight: bolder;
-    color: mediumslateblue;
 }
 
 #commentRow {
     grid-area: commentRow;
-    color: #2F4F4F;
-    font-size: 19px;
-    font-family: cursive;
-    font-weight: bolder;
 }
 
 #comment {
     grid-area: comment;
-    font-size: 19px;
     text-align: justify;
-    font-weight: bolder;
-    color: mediumslateblue;
     word-wrap: break-word;
 }
 
@@ -263,63 +230,7 @@
         font-size: 19px;
     }
 
-    #fullNameRow {
+    #fullNameRow, #addressRow, #dateRow, #sumRow, #statusRow, #commentRow, #fullName, #address, #date, #sum, .status, #comment, .toggleButton, .paymentButton, .a-name, .price {
         font-size: 16px;
-    }
-
-    #fullName {
-        font-size: 16px;
-    }
-
-    #addressRow {
-        font-size: 16px;
-    }
-
-    #address {
-        font-size: 16px;
-    }
-
-    #dateRow {
-        font-size: 16px;
-    }
-
-    #date {
-        font-size: 16px;
-    }
-
-    #sumRow {
-        font-size: 16px;
-    }
-
-    #sum {
-        font-size: 16px;
-    }
-
-    #statusRow {
-        font-size: 16px;
-    }
-
-    #status {
-        font-size: 16px;
-    }
-
-    #commentRow {
-        font-size: 16px;
-    }
-
-    #comment {
-        font-size: 16px;
-    }
-
-    .toggleButton, .paymentButton {
-        font-size: 16px;
-    }
-
-    .a-name {
-        font-size: 19px;
-    }
-
-    .price {
-        font-size: 19px;
     }
 }

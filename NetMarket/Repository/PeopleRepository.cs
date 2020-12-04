@@ -69,7 +69,7 @@ namespace NetMarket.Repository
             if (_netMarketDbContext.People.Any())
             {
                 var usersForThisParameter = (from human in GetPeople()
-                        where human.Login == login && human.Email == email
+                        where human.Login == login || human.Email == email
                         select human).ToList();
                 return usersForThisParameter.Count == 0;
             }
@@ -94,13 +94,13 @@ namespace NetMarket.Repository
         public List<EmployeeViewModel> GetEmployees()
         {
             return (from human in GetPeople()
-                where human.Role.Name == "admin" || human.Role.Name == "employee"
+                where human.RoleId == 1 || human.RoleId == 2
                 select new EmployeeViewModel
                 {
                     Id = human.Id,
-                    FullName = human.MiddleName != null
-                        ? human.Surname + " " + human.Name + " " + human.MiddleName
-                        : human.Surname + " " + human.Name,
+                    Surname = human.Surname,
+                    Name = human.Name,
+                    MiddleName = human.MiddleName ?? "",
                     Email = human.Email,
                     PhoneNumber = human.PhoneNumber,
                     Role = human.RoleId
@@ -110,13 +110,13 @@ namespace NetMarket.Repository
         public List<EmployeeViewModel> GetEmployees(string search)
         {
             return (from human in GetPeople()
-                where (human.Role.Name == "admin" || human.Role.Name == "employee") && (human.Name.Contains(search) || human.Surname.Contains(search) || human.MiddleName != null && human.MiddleName.Contains(search))
+                where (human.RoleId == 1 || human.RoleId == 2) && (human.Name.Contains(search) || human.Surname.Contains(search) || human.MiddleName != null && human.MiddleName.Contains(search))
                 select new EmployeeViewModel
                 {
                     Id = human.Id,
-                    FullName = human.MiddleName != null
-                        ? human.Surname + " " + human.Name + " " + human.MiddleName
-                        : human.Surname + " " + human.Name,
+                    Surname = human.Surname,
+                    Name = human.Name,
+                    MiddleName = human.MiddleName ?? "",
                     Email = human.Email,
                     PhoneNumber = human.PhoneNumber,
                     Role = human.RoleId
@@ -238,6 +238,14 @@ namespace NetMarket.Repository
                     response = "Некорректный номер телефона!";
                 }
             }
+
+            if (phoneNumber == null && (from human in _netMarketDbContext.People
+                where human.Login == login
+                select human).ToList()[0].RoleId != 3)
+            {
+                response = "Некорректный номер телефона!";
+            }
+
             if (response == "good")
             {
                 var human = _netMarketDbContext.People.Find(GetUserId(login));
@@ -254,6 +262,11 @@ namespace NetMarket.Repository
             human.RoleId = roleId;
             _netMarketDbContext.People.Update(human);
             await _netMarketDbContext.SaveChangesAsync();
+        }
+
+        public void ClearCache()
+        {
+            _cache.Remove("people");
         }
     }
 }

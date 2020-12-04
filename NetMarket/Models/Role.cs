@@ -8,11 +8,11 @@ namespace NetMarket.Models
 
         public string Name { get; set; }
 
-        public virtual ICollection<People> Users { get; set; }
+        public virtual ICollection<People> People { get; set; }
 
         public Role()
         {
-            Users = new List<People>();
+            People = new List<People>();
         }
     }
 }

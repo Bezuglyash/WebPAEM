@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using NetMarket.Models;
 using NetMarket.Repository;
 using NetMarket.ViewModels;
+using NetMarket.ViewModels.Employee;
 
 namespace NetMarket.Controllers
 {
@@ -16,12 +17,16 @@ namespace NetMarket.Controllers
     {
         private PeopleRepository _peopleRepository;
         private ProductRepository _productRepository;
+        private OrderRepository _orderRepository;
+        private ProductInBasketRepository _productInBasketRepository;
         IWebHostEnvironment _appEnvironment;
 
-        public StaffController(PeopleRepository peopleRepository, ProductRepository productRepository, IWebHostEnvironment appEnvironment)
+        public StaffController(PeopleRepository peopleRepository, ProductRepository productRepository, OrderRepository orderRepository, ProductInBasketRepository productInBasketRepository, IWebHostEnvironment appEnvironment)
         {
             _peopleRepository = peopleRepository;
             _productRepository = productRepository;
+            _orderRepository = orderRepository;
+            _productInBasketRepository = productInBasketRepository;
             _appEnvironment = appEnvironment;
         }
 
@@ -47,8 +52,67 @@ namespace NetMarket.Controllers
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> UpdateRole(Guid id, string rewriteRole)
         {
-            await _peopleRepository.EmployeeRoleUpdateAsync(id, rewriteRole == "Администратор" ? 1 : 3);
+            await _peopleRepository.EmployeeRoleUpdateAsync(id, rewriteRole == "Администратор" ? 1 : 2);
             return StatusCode(200);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "admin")]
+        public IActionResult NewEmployee()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "admin")]
+        public IActionResult NewEmployee(RegisterEmployeeViewModel registerEmployeeViewModel)
+        {
+            if (!_peopleRepository.IsUniqueLogin(registerEmployeeViewModel.Login, registerEmployeeViewModel.Email))
+            {
+                ModelState.AddModelError("", "Логин или Email уже занят!");
+            }
+
+            if (ModelState.IsValid)
+            {
+                _peopleRepository.AddHuman(registerEmployeeViewModel.Login, registerEmployeeViewModel.Email, Encryption.Encryption.GetHash(registerEmployeeViewModel.Password), registerEmployeeViewModel.Name,
+                    registerEmployeeViewModel.Surname, registerEmployeeViewModel.MiddleName, registerEmployeeViewModel.PhoneNumber, registerEmployeeViewModel.Role);
+                return RedirectToAction("Employees", "Staff");
+            }
+
+            return View(registerEmployeeViewModel);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "employee")]
+        public IActionResult Orders()
+        {
+            return View(_orderRepository.GetAllOrders());
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "employee")]
+        public IActionResult Orders(string search)
+        {
+            if (search != null)
+            {
+                return View(_orderRepository.GetSearchOrders(search));
+            }
+            return RedirectToAction("Orders");
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "employee")]
+        public async Task<IActionResult> UpdateStatus(int id, int rewriteStatus)
+        {
+            await _orderRepository.OrderStatusUpdateAsync(id, rewriteStatus);
+            return StatusCode(200);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "employee")]
+        public string GetOrderStatus(int id)
+        {
+            return _orderRepository.GetOrderStatus(id);
         }
 
         [HttpGet]
@@ -152,6 +216,11 @@ namespace NetMarket.Controllers
         public async Task<IActionResult> EditData(int phoneId, string typeOfData, string newData)
         {
             await _productRepository.UpdateAsync(phoneId, typeOfData, newData);
+            if (typeOfData == "existence")
+            {
+                await _productInBasketRepository.DeleteAllProductsThatAreOutOfStockAsync(phoneId);
+                _orderRepository.DeleteAllProductsThatAreOutOfStock(phoneId);
+            }
             return StatusCode(200);
         }
 

@@ -4,12 +4,10 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NetMarket.Models;
 using NetMarket.Repository;
-using NetMarket.ValidationAttributes;
 using NetMarket.ViewModels;
 
 namespace NetMarket.Controllers
@@ -37,16 +35,17 @@ namespace NetMarket.Controllers
         {
             _logger.LogInformation(loginViewModel.Login);
             _logger.LogInformation(loginViewModel.Password);
-            People user = _peopleRepository.CheckData(loginViewModel.Login, Encryption.Encryption.GetHash(loginViewModel.Password));
-            if (user == null)
+            People human = _peopleRepository.CheckData(loginViewModel.Login, Encryption.Encryption.GetHash(loginViewModel.Password));
+            if (human == null)
             {
                 ModelState.AddModelError("", "Неправильный логин или пароль!");
+                _peopleRepository.ClearCache();
             }
 
             if (ModelState.IsValid)
             {
-                await Authenticate(user);
-                if (user.RoleId == 2)
+                await Authenticate(human);
+                if (human.RoleId == 3)
                 {
                     return RedirectToAction("Phone", "Market");
                 }
@@ -73,20 +72,20 @@ namespace NetMarket.Controllers
             if (ModelState.IsValid)
             {
                 _peopleRepository.AddHuman(registerViewModel.Login, registerViewModel.Email, Encryption.Encryption.GetHash(registerViewModel.Password), registerViewModel.Name,
-                    registerViewModel.Surname, registerViewModel.MiddleName, registerViewModel.PhoneNumber, 2);
+                    registerViewModel.Surname, registerViewModel.MiddleName, registerViewModel.PhoneNumber, 3);
                 return RedirectToAction("Phone", "Market");
             }
 
             return View(registerViewModel);
         }
 
-        private async Task Authenticate(People user)
+        private async Task Authenticate(People human)
         {
             // создаем один claim
             var claims = new List<Claim>
             {
-                new Claim(ClaimsIdentity.DefaultNameClaimType, user.Login),
-                new Claim(ClaimsIdentity.DefaultRoleClaimType, user.Role.Name)
+                new Claim(ClaimsIdentity.DefaultNameClaimType, human.Login),
+                new Claim(ClaimsIdentity.DefaultRoleClaimType, human.Role.Name)
             };
             // создаем объект ClaimsIdentity
             ClaimsIdentity id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
@@ -180,13 +179,14 @@ namespace NetMarket.Controllers
             if (type == "login" && response == "good")
             {
                 await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-                await Authenticate(data, HttpContext.User.IsInRole("user") ? "user" : "admin");
+                await Authenticate(data, HttpContext.User.IsInRole("user") ? "user" : HttpContext.User.IsInRole("admin") ? "admin" : "employee");
             }
             return response;
         }
 
         public async Task<IActionResult> Logout()
         {
+            _peopleRepository.ClearCache();
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Phone", "Market");
         }

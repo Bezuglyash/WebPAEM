@@ -4,6 +4,7 @@
 }
 <head>
     <link rel="stylesheet" href="~/css/employees.css" />
+    <link rel="stylesheet" href="~/css/search.css" />
 </head>
 <body id="employeesList" class="body-employees">
     <h3 class="h3">Сотрудники</h3>
@@ -24,9 +25,18 @@
             @foreach (var item in Model)
             {
                 <tr>
-                    <td class="text-center nameEmployee">
-                        @item.FullName
-                    </td>
+                    @if (item.MiddleName != "")
+                    {
+                        <td class="text-center nameEmployee">
+                            @item.Surname @item.Name @item.MiddleName
+                        </td>
+                    }
+                    else
+                    {
+                        <td class="text-center nameEmployee">
+                            @item.Surname @item.Name
+                        </td>
+                    }
                     <td class="text-center email" style="text-decoration: none;">
                         @item.Email
                     </td>
@@ -50,7 +60,7 @@
                 </tr>
             }
         </table>
-        <a class="add" style="text-decoration: none;" asp-action="NewProduct" asp-controller="Staff">Добавить сотрудника</a>
+        <a class="add" style="text-decoration: none;" asp-action="NewEmployee" asp-controller="Staff">Добавить сотрудника</a>
     </div>
     <div id="editContainer" class="editContainer" style="display: none;">
         <div id="editData" class="editData">
@@ -72,14 +82,15 @@
             //alert("Топчик!");
         };
 
-        document.querySelector("select").addEventListener('change',
-            function(e) {
+        $(document).ready(function() { //или $(function() {
+            $("select").change(function(e){
                 console.log(this.id.toString());
                 id = this.id;
                 rewriteRole = e.target.value;
                 $(".editContainer").fadeIn();
                 $("#editData").focus();
             });
+        });
 
         $(document).mouseup(function(e) {
             if (document.getElementById('editContainer').style.display != "none") {
@@ -105,13 +116,13 @@
                 type: "POST",
                 url: "/Staff/UpdateRole",
                 data: { id, rewriteRole },
-                success: function() {
+                success: function () {
+                    Standard();
                 },
                 error: function(req, status, error) {
                     alert(error);
                 }
             });
-            Standard();
         }
 
         function CancelClick() {

@@ -80,6 +80,14 @@ namespace NetMarket.Repository
                 select product).ToList();
         }
 
+        public bool IsHaveInStock(int id)
+        {
+            var product = (from prod in GetProducts()
+                where prod.Id == id
+                select prod).ToList()[0];
+            return product.HaveInStock;
+        }
+
         public async Task UpdateAsync(int id, string typeOfUpdate, object data)
         {
             _cache.Remove("products");

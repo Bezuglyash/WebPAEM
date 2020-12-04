@@ -1,0 +1,317 @@
+﻿.ul-orderCard {
+    position: relative;
+    list-style: none;
+    padding: 0;
+}
+
+.li-orderCard {
+    position: relative;
+    display: block;
+    border-radius: 9px;
+    background: white;
+    margin-bottom: 28px;
+}
+
+.myOrderCard {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    border-radius: 9px;
+    background: white;
+    box-shadow: 5px 5px 7px #FFA07A;
+    padding: 5px 28px;
+    margin: 0;
+}
+
+.orderData {
+    align-self: stretch;
+    display: grid;
+    grid-template-areas: "numberOrder numberOrder" 
+                         "fullNameRow fullName"
+                         "informationRow information"
+                         "emailRow email"
+                         "phoneNumberRow phoneNumber"
+                         "sumRow sum" 
+                         "addressRow address" 
+                         "statusRow status" 
+                         "dateRow date" 
+                         "commentRow comment" 
+                         "rowButton rowButton";
+    grid-template-rows: 67px 67px 67px 67px 67px 67px 67px 67px auto 67px;
+    grid-template-columns: 40% 60%;
+    grid-row-gap: 3px;
+    grid-column-gap: 3px;
+    padding: 0;
+}
+
+#numberOrder {
+    grid-area: numberOrder;
+    color: #2F4F4F;
+    font-size: 27px;
+    font-family: cursive;
+    font-weight: bolder;
+}
+
+#fullNameRow, #informationRow, #emailRow, #phoneNumberRow, #addressRow, #dateRow, #sumRow, #statusRow, #commentRow {
+    color: #2F4F4F;
+    font-size: 19px;
+    font-family: cursive;
+    font-weight: bolder;
+}
+
+#fullName, #information, #email, #phoneNumber, #address, #date, #sum, #status, .selectStatus, #comment {
+    font-size: 19px;
+    text-align: center;
+    font-weight: bolder;
+    color: mediumslateblue;
+}
+
+#fullNameRow {
+    grid-area: fullNameRow;
+}
+
+#fullName {
+    grid-area: fullName;
+}
+
+#informationRow {
+    grid-area: informationRow;
+}
+
+#information {
+    grid-area: information;
+}
+
+#emailRow {
+    grid-area: emailRow;
+}
+
+#email {
+    grid-area: email;
+}
+
+#phoneNumberRow {
+    grid-area: phoneNumberRow;
+}
+
+#phoneNumber {
+    grid-area: phoneNumber;
+}
+
+#addressRow {
+    grid-area: addressRow;
+}
+
+#address {
+    grid-area: address;
+}
+
+#dateRow {
+    grid-area: dateRow;
+}
+
+#date {
+    grid-area: date;
+}
+
+#sumRow {
+    grid-area: sumRow;
+}
+
+#sum {
+    grid-area: sum;
+}
+
+#statusRow {
+    grid-area: statusRow;
+}
+
+#status {
+    grid-area: status;
+}
+
+.selectStatus {
+    grid-area: status;
+    border: 1px grey;
+    outline: 1px grey;
+    border-radius: 5px;
+    padding-left: 9px;
+    text-align: right;
+    margin-bottom: 28px;
+    background: rgba(223, 241, 245, 0.55);
+    top: 0;
+}
+
+#commentRow {
+    grid-area: commentRow;
+}
+
+#comment {
+    grid-area: comment;
+    text-align: justify;
+    word-wrap: break-word;
+}
+
+#rowButton {
+    grid-area: rowButton;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.toggleButton, .paymentButton {
+    width: 167px;
+    font-size: 19px;
+    text-align: center;
+    color: white;
+    border: none;
+    outline: none;
+    padding: 5px 12px;
+    border-radius: 5px;
+}
+
+.toggleButton {
+    background: mediumslateblue;
+    margin-right: 5px;
+}
+
+.paymentButton {
+    background: #32CD32;
+    margin-left: 5px;
+}
+
+.toggleButton:hover, .paymentButton:hover {
+    opacity: 0.67;
+}
+
+.orderPhones {
+    width: 100%;
+}
+
+.ul-products {
+    list-style: none;
+    padding: 0;
+}
+
+.li-product {
+    display: block;
+    border-radius: 9px;
+    background: white;
+    margin-bottom: 9px;
+}
+
+.div-data {
+    display: flex;
+    justify-content: space-around;
+    align-self: center;
+}
+
+.div-img {
+    width: 50%;
+    position: relative;
+    padding-bottom: 28%;
+    overflow: hidden;
+}
+
+.div-img img {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 80%;
+    max-height: 80%;
+    margin: auto;
+    transition: transform .4s ease-out;
+}
+
+.div-specification {
+    width: 50%;
+    align-self: center;
+    display: grid;
+}
+
+.p-name {
+    width: 228px;
+    font-size: 27px;
+    font-weight: bolder;
+    color: mediumslateblue;
+}
+
+.price {
+    font-size: 27px;
+    color: black;
+}
+
+.editContainer {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    z-index: 28;
+    opacity: 1;
+    display: flex;
+    justify-content: center;
+    -webkit-backdrop-filter: blur(3px);
+    -moz-backdrop-filter: blur(3px);
+    backdrop-filter: blur(3px);
+    -o-filter: blur(3px);
+    -ms-filter: blur(3px);
+    background: rgba(135, 206, 250, 0.28);
+}
+
+.editData {
+    align-self: center;
+    width: 528px;
+    height: 328px;
+    position: fixed;
+    border-radius: 5px;
+    background: white;
+    box-shadow: 0 0 19px cyan;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.pRole {
+    width: 100%;
+    font-size: 28px;
+    text-align: center;
+    color: mediumslateblue;
+}
+
+.buttonSave, .buttonCancel {
+    align-self: center;
+    width: 167px;
+    font-size: 19px;
+    padding: 9px 0;
+    color: white;
+    border-radius: 5px;
+    border: none;
+    outline: none;
+}
+
+.buttonSave {
+    background: mediumslateblue;
+}
+
+.buttonCancel {
+    background: #F08080;
+}
+
+.buttonSave:hover, .buttonCancel:hover {
+    opacity: 0.67;
+}
+
+@media screen and (max-width: 767px) {
+    #numberOrder {
+        font-size: 19px;
+    }
+
+    #fullNameRow, #informationRow, #emailRow, #phoneNumberRow, #addressRow, #dateRow, #sumRow, #statusRow, #commentRow, #fullName, #information, #email, #phoneNumber, #address, #date, #sum, #status, .selectStatus, #comment, .toggleButton, .paymentButton, .a-name, .price {
+        font-size: 16px;
+    }
+}

@@ -25,10 +25,10 @@
         <input type="password" style="border-radius: 9px;" placeholder="Пароль" asp-for="Password" required />
         <span asp-validation-for="Password"> </span>
 
-        <button style="border-radius: 9px;" type="submit" name="form_auth_submit">Войти</button>
+        <button style="border-radius: 9px; outline: none;" type="submit" name="form_auth_submit">Войти</button>
 
         <div class="div-registration">
-            <a style="" asp-area="" asp-controller="Account" asp-action="Registration">Зарегистрироваться</a>
+            <a style="outline: none;" asp-area="" asp-controller="Account" asp-action="Registration">Зарегистрироваться</a>
         </div>
     </form>
 

@@ -76,67 +76,6 @@
     background: mediumslateblue;
 }
 
-* {
-    box-sizing: border-box;
-}
-
-.search {
-    background: transparent;
-    padding: 19px 0;
-}
-
-.search form {
-    position: relative;
-    width: 100%;
-    margin: 0 auto;
-}
-
-.search input {
-    width: 100%;
-    height: 40px;
-    font-size: 19px;
-    padding-right: 42px;
-    padding-left: 10px;
-    border: 2px solid mediumslateblue;
-    border-radius: 5px;
-    outline: none;
-    background: white;
-    color: black;
-}
-
-.search button {
-    position: absolute;
-    top: 0;
-    right: 0px;
-    width: 42px;
-    height: 40px;
-    border: none;
-    outline: none;
-    background: mediumslateblue;
-    border-radius: 0 5px 5px 0;
-    cursor: pointer;
-}
-
-.search button {
-    position: absolute;
-    top: 0;
-    right: 0px;
-    width: 42px;
-    height: 40px;
-    border: none;
-    outline: none;
-    background: mediumslateblue;
-    border-radius: 0 5px 5px 0;
-    cursor: pointer;
-}
-
-.search button:before {
-    content: "\f002";
-    font-family: FontAwesome;
-    font-size: 19px;
-    color: white;
-}
-
 .role {
     max-width: 167px;
     padding: 1.28px;

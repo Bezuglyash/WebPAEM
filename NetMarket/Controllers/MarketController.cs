@@ -27,42 +27,41 @@ namespace NetMarket.Controllers
             _productInBasketRepository = productInBasketRepository;
             _orderRepository = orderRepository;
             _logger = logger;
-            //_httpContextAccessor = httpContextAccessor;
             if (_productRepository.GetProducts().Count == 0)
             {
                 Task.Run(async () => await _productRepository.AddProductAsync("Apple", "Apple iPhone 11", 73990, 256, "Белый", "iOS", 194,
-                    "Дорогой, но топовый телефон!", "Есть в наличии", "iPhoneWhite11.png"));
+                    "Дорогой, но топовый телефон!", "Есть в наличии", "iPhoneWhite11.png")).Wait();
 
                 Task.Run(async () => await _productRepository.AddProductAsync("Apple", "Apple iPhone 11", 73990, 256, "Жёлтый", "iOS", 194,
-                    "Дорогой, но топовый телефон!", "Есть в наличии", "iPhoneYellow11.png"));
+                    "Дорогой, но топовый телефон!", "Есть в наличии", "iPhoneYellow11.png")).Wait();
 
                 Task.Run(async () => await _productRepository.AddProductAsync("Apple", "Apple iPhone 7", 26990, 32, "Золотистый", "iOS", 138,
-                    "Староват, но цена поражает!", "Есть в наличии", "iPhoneGold7.png"));
+                    "Староват, но цена поражает!", "Есть в наличии", "iPhoneGold7.png")).Wait();
 
                 Task.Run(async () => await _productRepository.AddProductAsync("Samsung", "Samsung Galaxy Z Fold2", 179990, 256, "Чёрный", "Android", 282,
-                    "Очень дорогой, но, удвительно, не iPhone!", "Есть в наличии", "GalaxyZFold2Black.png"));
+                    "Очень дорогой, но, удвительно, не iPhone!", "Есть в наличии", "GalaxyZFold2Black.png")).Wait();
 
                 Task.Run(async () => await _productRepository.AddProductAsync("Samsung", "Samsung Galaxy M21", 15990, 64, "Синий", "Android", 188,
-                    "Недорогой, хороший, ещё и Samsung - отличный вариант для студента!", "Есть в наличии", "GalaxyM21Blue.png"));
+                    "Недорогой, хороший, ещё и Samsung - отличный вариант для студента!", "Есть в наличии", "GalaxyM21Blue.png")).Wait();
 
                 Task.Run(async () => await _productRepository.AddProductAsync("Samsung", "Samsung Galaxy M21", 15990, 64, "Чёрный", "Android", 188,
-                    "Недорогой, хороший, ещё и Samsung - отличный вариант для студента!", "Есть в наличии", "GalaxyM21Black.png"));
+                    "Недорогой, хороший, ещё и Samsung - отличный вариант для студента!", "Есть в наличии", "GalaxyM21Black.png")).Wait();
 
                 Task.Run(async () => await _productRepository.AddProductAsync("Honor", "Honor 10 Lite", 12990, 64, "Синий", "Android", 162,
-                    "Бюждетный и хороший вариант! Сами таким пользуемся)", "Есть в наличии", "Honor10LiteBlue.png"));
+                    "Бюждетный и хороший вариант! Сами таким пользуемся)", "Есть в наличии", "Honor10LiteBlue.png")).Wait();
 
                 Task.Run(async () => await _productRepository.AddProductAsync("Honor", "Honor 10 Lite", 12990, 64, "Чёрный", "Android", 162,
-                    "Бюждетный и хороший вариант!", "Есть в наличии", "Honor10LiteBlack.png"));
+                    "Бюждетный и хороший вариант!", "Есть в наличии", "Honor10LiteBlack.png")).Wait();
 
                 Task.Run(async () => await _productRepository.AddProductAsync("Honor", "Honor 30 Pro Plus", 54990, 256, "Зелёный", "Android", 190,
-                    "Такой дорогой Honor?", "Есть в наличии", "Honor30ProPlusGreen.png"));
+                    "Такой дорогой Honor?", "Есть в наличии", "Honor30ProPlusGreen.png")).Wait();
             }
         }
 
         [HttpGet]
         public IActionResult Phone()
         {
-            if (!HttpContext.User.IsInRole("admin"))
+            if (!HttpContext.User.IsInRole("admin") && !HttpContext.User.IsInRole("employee"))
             {
                 if (HttpContext.User.Identity.Name == null)
                 {
@@ -77,10 +76,17 @@ namespace NetMarket.Controllers
                 }
                 return View(_productRepository.GetProducts());
             }
-            else
+            return RedirectToAction("Warehouse", "Staff");
+        }
+
+        [HttpPost]
+        public IActionResult Phone(string search)
+        {
+            if (search != null)
             {
-                return RedirectToAction("Warehouse", "Staff");
+                return View(_productRepository.GetSearchProducts(search));
             }
+            return RedirectToAction("Phone");
         }
 
         [HttpGet]
@@ -226,24 +232,46 @@ namespace NetMarket.Controllers
 
         [HttpPost]
         [Authorize(Roles = "user")]
+        public IActionResult MyOrders(string search)
+        {
+            if (search != null)
+            {
+                return View(_orderRepository.GetSearchUserOrders(HttpContext.User.Identity.Name, search));
+            }
+            return RedirectToAction("MyOrders");
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "user, employee")]
         public JsonResult GetProductsInOrder(int orderNumber)
         {
             return Json(_orderRepository.GetProductsInOrder(orderNumber));
         }
 
         [HttpPost]
-        public async Task AddToBasket(int productId)
+        [Authorize(Roles = "user")]
+        public async Task<IActionResult> Payment(int orderNumber)
+        {
+            await _orderRepository.OrderStatusUpdateAsync(orderNumber, 4);
+            return StatusCode(200);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddToBasket(int productId)
         {
             _logger.LogInformation(productId.ToString());
-            if (HttpContext.User.Identity.Name == null)
+            if (_productRepository.IsHaveInStock(productId))
             {
-                Guid userId = new Guid(HttpContext.Request.Cookies["NotAuthorizedUser"]);
-                await _productInBasketRepository.AddProductInBasketForNotAuthorizedUserAsync(userId, productId);
-            }
-            else
-            {
+                if (HttpContext.User.Identity.Name == null)
+                {
+                    Guid userId = new Guid(HttpContext.Request.Cookies["NotAuthorizedUser"]);
+                    await _productInBasketRepository.AddProductInBasketForNotAuthorizedUserAsync(userId, productId);
+                    return StatusCode(200);
+                }
                 await _productInBasketRepository.AddProductInBasketForAuthorizedUserAsync(HttpContext.User.Identity.Name, _peopleRepository.GetUserId(HttpContext.User.Identity.Name), productId);
+                return StatusCode(200);
             }
+            return StatusCode(400);
         }
 
         [HttpPost]
@@ -253,22 +281,10 @@ namespace NetMarket.Controllers
             await _productInBasketRepository.DeleteProductFromCartAsync(idInBasket);
         }
 
-        [HttpPost]
-        public int Add(int productId)
-        {
-            return productId;
-        }
-
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-
-        private void AddCookies(string name)
-        {
-            //await HttpContext.Response.WriteAsync($"Hello {name}!");
-            _logger.LogInformation(name);
         }
     }
 }
