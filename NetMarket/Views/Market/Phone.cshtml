@@ -125,9 +125,18 @@
         color: coral;
     }
 </style>
+<head>
+    <link rel="stylesheet" href="~/css/search.css" />
+</head>
 <body id="phoneList" class="body-phone">
     <div id="list" class="div-scroll">
         <h1 class="text-center" style="margin-bottom: 28px; color: mediumslateblue">Добро пожаловать в интернет-магазин ПАЕМ!</h1>
+        <div class="search">
+            <form asp-action="Phone" asp-controller="Market" method="post" enctype="multipart/form-data">
+                <input type="text" placeholder="Поиск телефонов..." name="search">
+                <button type="submit"></button>
+            </form>
+        </div>
         <ul class="products">
             @foreach (var item in Model)
             {

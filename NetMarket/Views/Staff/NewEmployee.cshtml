@@ -1,0 +1,76 @@
+﻿@model NetMarket.ViewModels.Employee.RegisterEmployeeViewModel
+@{
+    ViewData["Title"] = "Добавление сотрудника";
+}
+<head>
+    <link rel="stylesheet" href="~/css/newEmployee.css" />
+</head>
+<body class="body-edit">
+    <form class="card radius" style="border-radius: 9px" method="post">
+        <text class="head">Новый сотрудник</text>
+
+        <div class="validation" asp-validation-summary="ModelOnly">
+            <ul>
+                <li></li>
+            </ul>
+        </div>
+
+        <span class="span-error" asp-validation-for="Login"> </span>
+        <input type="text" style="border-radius: 9px;" placeholder="Логин" asp-for="Login" required autocomplete="new-apssword"/>
+
+        <span class="span-error" asp-validation-for="Email"> </span>
+        <input type="text" style="border-radius: 9px;" placeholder="Email" asp-for="Email" required autocomplete="new-apssword" />
+
+        <span class="span-error" asp-validation-for="PhoneNumber"> </span>
+        <input type="text" style="border-radius: 9px;" placeholder="Номер телефона" asp-for="PhoneNumber" required autocomplete="new-apssword" />
+
+        <span class="span-error" asp-validation-for="Password"> </span>
+        <input type="password" style="border-radius: 9px;" placeholder="Пароль" asp-for="Password" required autocomplete="new-apssword" />
+
+        <span class="span-error" asp-validation-for="RepeatPassword"> </span>
+        <input type="password" style="border-radius: 9px;" placeholder="Повторите пароль" asp-for="RepeatPassword" required autocomplete="new-apssword" />
+
+        <span class="span-error" asp-validation-for="Name"> </span>
+        <input id="name" type="text" style="border-radius: 9px;" placeholder="Имя" asp-for="Name" required autocomplete="new-apssword" />
+
+        <span class="span-error" asp-validation-for="Surname"> </span>
+        <input type="text" style="border-radius: 9px;" placeholder="Фамилия" asp-for="Surname" required autocomplete="new-apssword" />
+
+        <span class="span-error" asp-validation-for="MiddleName"> </span>
+        <input type="text" style="border-radius: 9px;" placeholder="Отчество" asp-for="MiddleName" autocomplete="new-apssword"/>
+        
+        <select asp-for="Role" class="role" style="border-radius: 9px; padding: 16px 20px;">
+            <option value="1">Администратор</option>
+            <option value="2">Сотрудник</option>
+        </select>
+
+        <button class="buttonAdd" type="submit" name="form_auth_submit" style="outline: none;">Сохранить</button>
+    </form>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        window.onload = init;
+
+        function init() {
+            //alert("Топчик!");
+        };
+
+        function readURL(input) {
+
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#image').attr('src', e.target.result);
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        $("#file").change(function () {
+            readURL(this);
+        });
+    </script>
+</body>

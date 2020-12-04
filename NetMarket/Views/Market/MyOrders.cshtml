@@ -4,11 +4,18 @@
 }
 <head>
     <link rel="stylesheet" href="~/css/myOrders.css" />
+    <link rel="stylesheet" href="~/css/search.css" />
 </head>
 <body id="ordersList" class="body-myOrders">
+    <h1 class="text-center" style="margin-bottom: 28px; color: mediumslateblue">Мои заказы</h1>
+    <div class="search">
+        <form asp-action="MyOrders" asp-controller="Market" method="post" enctype="multipart/form-data">
+            <input type="text" placeholder="Поиск заказов..." name="search">
+            <button type="submit"></button>
+        </form>
+    </div>
     @if (Model.Count() > 0)
     {
-        <h1 class="text-center" style="margin-bottom: 28px; color: mediumslateblue">Мои заказы</h1>
         <ul class="ul-orderCard">
             @foreach (var item in Model)
             {
@@ -25,7 +32,7 @@
                             <p id="sumRow">Стоимость заказа</p>
                             <p id="sum">@item.Sum ₽</p>
                             <p id="statusRow">Статус</p>
-                            <p id="status">@item.Status</p>
+                            <p id="status-@item.OrderNumber" class="status">@item.Status</p>
                             <p id="commentRow">Комментарий</p>
                             @if (item.Comment != "-")
                             {
@@ -38,22 +45,16 @@
                             <div id="rowButton">
                                 @if (item.Status == "Заказ доставлен. Ожидается оплата!")
                                 {
-                                    <button id="toggleButton-@item.OrderNumber" class="toggleButton" style="outline: none;" onclick="ToggleButtonClick(@item.OrderNumber)">
-                                        Развернуть
-                                    </button>
-                                    <button class="paymentButton" style="outline: none;">
-                                        Оплатить
-                                    </button>
+                                    <button id="toggleButton-@item.OrderNumber" class="toggleButton" style="outline: none;" onclick="ToggleButtonClick(@item.OrderNumber)">Развернуть</button>
+                                    <button id="payment-@item.OrderNumber" class="paymentButton" style="outline: none;" onclick="PaymentClick(@item.OrderNumber)">Оплатить</button>
                                 }
                                 else
                                 {
-                                    <button id="toggleButton-@item.OrderNumber" class="toggleButton" style="margin-right: 0; outline: none;" onclick="ToggleButtonClick(@item.OrderNumber)">
-                                        Развернуть
-                                    </button>
+                                    <button id="toggleButton-@item.OrderNumber" class="toggleButton" style="margin-right: 0; outline: none;" onclick="ToggleButtonClick(@item.OrderNumber)">Развернуть</button>
                                 }
                             </div>
                         </div>
-                        <div class="orderPhones" style="display: none">
+                        <div id="div-@item.OrderNumber" class="orderPhones" style="display: none">
                             <ul id="ul-@item.OrderNumber" class="ul-products">
                             </ul>
                         </div>
@@ -65,7 +66,7 @@
     else
     {
         <div style="margin: 0; width: 100%;">
-            <p style="font-size: 40px; color: mediumslateblue; text-align: center;">Вы ещё не делали заказов в нашем магазине!</p>
+            <p style="font-size: 40px; color: mediumslateblue; text-align: center;">Нет заказов!</p>
         </div>
     }
 
@@ -76,7 +77,7 @@
         window.onload = init;
         var productNumber = [];
 
-        $(function () {
+        $(function() {
             $(".orderPhones").hide();
         });
 
@@ -90,7 +91,7 @@
                     type: "POST",
                     url: "/Market/GetProductsInOrder",
                     data: { orderNumber },
-                    success: function (json) {
+                    success: function(json) {
                         productNumber.push(orderNumber);
                         var ul = document.getElementById(`ul-${orderNumber}`);
                         for (i = 0; i < json.length; i++) {
@@ -132,6 +133,9 @@
                             button.className = "addToBasket";
                             button.value = json[i]['id'];
                             button.innerHTML = "+";
+                            if (!json[i]['haveInStock']) {
+                                button.style.visibility = "hidden";
+                            }
                             divButton.append(button);
                         }
 
@@ -141,19 +145,34 @@
                         $(`#${orderNumber}`)
                             .children(".orderPhones")
                             .slideToggle(928);
-                        RewriteTextInToggleButton(orderNumber);
                     },
-                    error: function (req, status, error) {
+                    error: function(req, status, error) {
                         alert(error);
                     }
                 });
             } else {
-                $(`#${orderNumber}`).siblings()
-                    .children(".orderPhones")
-                    .slideUp(928);
-                $(`#${orderNumber}`)
-                    .children(".orderPhones")
-                    .slideToggle(928);
+                if (document.getElementById(`toggleButton-${orderNumber}`).innerHTML == "Развернуть") {
+                    if (document.getElementById(`div-${orderNumber}`).style.display == "none") {
+                        $(`#${orderNumber}`).siblings()
+                            .children(".orderPhones")
+                            .slideUp(928);
+                        $(`#${orderNumber}`)
+                            .children(".orderPhones")
+                            .slideToggle(928);
+                        RewriteTextInToggleButton(orderNumber);
+                    }
+                } else {
+                    if (document.getElementById(`div-${orderNumber}`).style.display == "") {
+                        $(`#${orderNumber}`).siblings()
+                            .children(".orderPhones")
+                            .slideUp(928);
+                        $(`#${orderNumber}`)
+                            .children(".orderPhones")
+                            .slideToggle(928);
+                        RewriteTextInToggleButton(orderNumber);
+                    }
+                }
+                return;
             }
             RewriteTextInToggleButton(orderNumber);
         }
@@ -166,14 +185,32 @@
             }
         }
 
-        $(document).on('click', ".addToBasket",
-            function (e) {
+        $(document).on('click',
+            ".addToBasket",
+            function(e) {
                 window.AddToBasketClick(this.value);
             });
 
-        $(document).on('click', ".a-name",
-            function (e) {
+        $(document).on('click',
+            ".a-name",
+            function(e) {
                 window.MoreDetailedClick(this.value);
             });
+
+        function PaymentClick(orderNumber) {
+            $.ajax({
+                type: "POST",
+                url: "/Market/Payment",
+                data: { orderNumber },
+                success: function() {
+                    $(`#payment-${orderNumber}`).css("display", "none");
+                    $(`#toggleButton-${orderNumber}`).css("margin-right", "0");
+                    $(`#status-${orderNumber}`).text('Оплачено!');
+                },
+                error: function(req, status, error) {
+                    alert(error);
+                }
+            });
+        }
     </script>
 </body>

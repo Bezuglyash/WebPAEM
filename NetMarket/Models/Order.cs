@@ -18,7 +18,7 @@ namespace NetMarket.Models
 
         public string Surname { get; set; }
 
-        public string MiddleName { get; set; }
+        public string? MiddleName { get; set; }
 
         public string Email { get; set; }
 
@@ -31,7 +31,7 @@ namespace NetMarket.Models
 
         public int Sum { get; set; }
 
-        public virtual User User { get; set; }
+        public virtual People User { get; set; }
 
         public virtual OrderStatus OrderStatus { get; set; }
 

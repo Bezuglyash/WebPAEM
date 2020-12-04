@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using NetMarket.ValidationAttributes;
 
 namespace NetMarket.ViewModels
@@ -27,6 +28,7 @@ namespace NetMarket.ViewModels
 
         public string? MiddleName { get; set; }
 
-        public string PhoneNumber { get; set; }
+        [PhoneNumberMaybeNull(ErrorMessage = "Некорректный номер телефона!")]
+        public string? PhoneNumber { get; set; }
     }
 }

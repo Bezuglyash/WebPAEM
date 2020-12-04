@@ -5,7 +5,7 @@
                          "img div";
     grid-template-rows: 60px 1fr;
     grid-template-columns: 28% 1fr;
-    box-shadow: 0 0 20px #000000;
+    box-shadow: 0 0 19px cyan;
     border-radius: 28px;
     background: coral;
     top: 15%;

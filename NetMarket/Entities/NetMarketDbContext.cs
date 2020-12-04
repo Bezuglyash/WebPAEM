@@ -17,7 +17,7 @@ namespace NetMarket.Entities
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
             => optionsBuilder.UseLazyLoadingProxies();
 
-        public DbSet<User> Users { get; set; }
+        public DbSet<People> People { get; set; }
 
         public DbSet<Role> Roles { get; set; }
 
@@ -34,12 +34,12 @@ namespace NetMarket.Entities
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             string adminRoleName = "admin";
-            string userRoleName = "user";
             string employeeRoleName = "employee";
+            string userRoleName = "user";
 
             Role adminRole = new Role { Id = 1, Name = adminRoleName };
-            Role userRole = new Role { Id = 2, Name = userRoleName };
-            Role employeeRole = new Role { Id = 3, Name = employeeRoleName };
+            Role employeeRole = new Role { Id = 2, Name = employeeRoleName };
+            Role userRole = new Role { Id = 3, Name = userRoleName };
 
             string adminLogin = "MAXon28";
             string adminEmail = "max.ronald9@gmail.com";
@@ -49,7 +49,7 @@ namespace NetMarket.Entities
             string adminMiddleName = "Викторович";
             string adminPhoneNumber = "89162185817";
 
-            User adminUser = new User
+            People adminHuman = new People
             {
                 Id = Guid.NewGuid(),
                 Login = adminLogin,
@@ -67,8 +67,8 @@ namespace NetMarket.Entities
             OrderStatus thirdStatus = new OrderStatus { Id = 3, Status = "Заказ доставлен. Ожидается оплата!" };
             OrderStatus fourthStatus = new OrderStatus { Id = 4, Status = "Оплачено!" };
 
-            modelBuilder.Entity<User>().HasData(new User[] { adminUser });
-            modelBuilder.Entity<Role>().HasData(new Role[] { adminRole, userRole, employeeRole });
+            modelBuilder.Entity<People>().HasData(new People[] { adminHuman });
+            modelBuilder.Entity<Role>().HasData(new Role[] { adminRole, employeeRole, userRole });
             modelBuilder.Entity<OrderStatus>().HasData(new OrderStatus[] { firstStatus, secondStatus, thirdStatus, fourthStatus });
             base.OnModelCreating(modelBuilder);
         }

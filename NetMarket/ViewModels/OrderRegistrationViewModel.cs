@@ -18,7 +18,7 @@ namespace NetMarket.ViewModels
         public string Email { get; set; }
 
         [Required(ErrorMessage = "Это поле обязательно для заполнения!")]
-        [PhoneNumber(ErrorMessage = "Некорректный номер телефона!")]
+        [PhoneNumberNotNull(ErrorMessage = "Некорректный номер телефона!")]
         public string PhoneNumber { get; set; }
 
         [Required(ErrorMessage = "Это поле обязательно для заполнения!")]

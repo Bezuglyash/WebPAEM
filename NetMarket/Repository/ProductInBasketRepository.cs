@@ -146,5 +146,17 @@ namespace NetMarket.Repository
             await _netMarketDbContext.SaveChangesAsync();
             return productsId;
         }
+
+        public async Task DeleteAllProductsThatAreOutOfStockAsync(int productId)
+        {
+            var products = (from p in _netMarketDbContext.ProductsInBasket
+                where p.ProductId == productId
+                select p).ToList();
+            foreach (var product in products)
+            {
+                _netMarketDbContext.ProductsInBasket.Remove(product);
+            }
+            await _netMarketDbContext.SaveChangesAsync();
+        }
     }
 }
