@@ -1,17 +1,19 @@
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using NetMarket;
 
-public class Program
+namespace NetMarket
 {
-    public static void Main(string[] args)
+    public class Program
     {
-        BuildWebHost(args).Run();
-    }
+        public static void Main(string[] args)
+        {
+            BuildWebHost(args).Run();
+        }
 
-    public static IWebHost BuildWebHost(string[] args) =>
-        WebHost.CreateDefaultBuilder(args)
-            .UseStartup<Startup>()
-            .UseIISIntegration()
-            .Build();
+        public static IWebHost BuildWebHost(string[] args) =>
+            WebHost.CreateDefaultBuilder(args)
+                .UseStartup<Startup>()
+                .UseIISIntegration()
+                .Build();
+    }
 }

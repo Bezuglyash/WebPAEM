@@ -3,6 +3,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NetMarket.Models
 {
+    /// <summary>
+    /// Модель данных "Продукты в корзине"
+    /// </summary>
     [Table("ProductsInBasket")]
     public class ProductInBasket
     {

@@ -4,6 +4,9 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace NetMarket.Models
 {
+    /// <summary>
+    /// Модель данных "Заказы"
+    /// </summary>
     public class Order
     {
         public int Id { get; set; }

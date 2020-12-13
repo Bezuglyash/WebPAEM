@@ -11,6 +11,9 @@ using NetMarket.ViewModels.MyOrders;
 
 namespace NetMarket.Repository
 {
+    /// <summary>
+    /// Класс-репозиторий для работы с заказами на уровне доступа к данным
+    /// </summary>
     public class OrderRepository
     {
         private NetMarketDbContext _netMarketDbContext;
@@ -24,6 +27,21 @@ namespace NetMarket.Repository
             _search = new SearchByOrderNumber();
         }
 
+        /// <summary>
+        /// Метод создания нового заказа
+        /// </summary>
+        /// <param name="userId">ID пользователя</param>
+        /// <param name="time">Время оформления заказа</param>
+        /// <param name="name">Имя</param>
+        /// <param name="surname">Фамилия</param>
+        /// <param name="middleName">Отчество</param>
+        /// <param name="email">Email</param>
+        /// <param name="phoneNumber">Номер телефона</param>
+        /// <param name="address">Адрес доставки</param>
+        /// <param name="comment">Комментарий к заказу</param>
+        /// <param name="sum">Сумма заказа</param>
+        /// <param name="productsId">Список ID продуктов заказа</param>
+        /// <returns></returns>
         public async Task AddNewOrderAsync(Guid? userId, DateTime time, string name, string surname, string middleName, string email, string phoneNumber, string address, string comment, int sum, List<int> productsId)
         {
             var order = new Order
@@ -55,6 +73,10 @@ namespace NetMarket.Repository
             await _netMarketDbContext.SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Метод получения всех заказов
+        /// </summary>
+        /// <returns>Список заказаов</returns>
         public List<OrderViewModel> GetAllOrders()
         {
             if (!_cache.TryGetValue("allOrders", out List<OrderViewModel> list))
@@ -82,6 +104,11 @@ namespace NetMarket.Repository
             return list;
         }
 
+        /// <summary>
+        /// Метод получения всех заказов с учётом поиска
+        /// </summary>
+        /// <param name="search">Поиск</param>
+        /// <returns>Список заказов</returns>
         public List<OrderViewModel> GetSearchOrders(string search)
         {
             if (int.TryParse(search, out int searchInt))
@@ -92,6 +119,11 @@ namespace NetMarket.Repository
             return _search.GetSearchData(search, _cache, _netMarketDbContext);
         }
 
+        /// <summary>
+        /// Метод получения статуса заказа
+        /// </summary>
+        /// <param name="id">ID заказа</param>
+        /// <returns>Статус заказа</returns>
         public string GetOrderStatus(int id)
         {
             if (_cache.TryGetValue("allOrders", out List<OrderViewModel> list))
@@ -105,6 +137,11 @@ namespace NetMarket.Repository
                 select order.OrderStatus.Status).ToList()[0];
         }
 
+        /// <summary>
+        /// Метод получения истории заказов клиента
+        /// </summary>
+        /// <param name="login">Логин клиента</param>
+        /// <returns>Список заказаов</returns>
         public List<OrderViewModel> GetAllUserOrders(string login)
         {
             return (from order in _netMarketDbContext.Orders
@@ -125,6 +162,12 @@ namespace NetMarket.Repository
                 }).ToList();
         }
 
+        /// <summary>
+        /// Метод получения истории заказаов клиента с учётом поиска
+        /// </summary>
+        /// <param name="login">Логин клиента</param>
+        /// <param name="search">Поиск</param>
+        /// <returns>Список заказаов</returns>
         public List<OrderViewModel> GetSearchUserOrders(string login, string search)
         {
             if (int.TryParse(search, out int searchInt))
@@ -164,6 +207,11 @@ namespace NetMarket.Repository
                 }).ToList();
         }
 
+        /// <summary>
+        /// Метод получения списка товаров в заказе
+        /// </summary>
+        /// <param name="id">ID заказа</param>
+        /// <returns>Список товаров</returns>
         public List<ProductInOrderViewModel> GetProductsInOrder(int id)
         {
             if (!_cache.TryGetValue(id, out List<ProductInOrderViewModel> list))
@@ -186,6 +234,10 @@ namespace NetMarket.Repository
             return list;
         }
 
+        /// <summary>
+        /// Метод удаления из кеша товаров, которые удалены из интернет-магазина
+        /// </summary>
+        /// <param name="productId">ID товара</param>
         public void DeleteAllProductsThatAreOutOfStock(int productId)
         {
             var list = (from order in _netMarketDbContext.Orders
@@ -199,6 +251,12 @@ namespace NetMarket.Repository
             }
         }
 
+        /// <summary>
+        /// Метод обновления статуса заказа
+        /// </summary>
+        /// <param name="id">ID заказа</param>
+        /// <param name="newStatusId">ID нового статуса</param>
+        /// <returns></returns>
         public async Task OrderStatusUpdateAsync(int id, int newStatusId)
         {
             _cache.Remove("allOrders");

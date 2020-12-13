@@ -2,6 +2,9 @@
 
 namespace NetMarket.Models
 {
+    /// <summary>
+    /// Модель данных "Продукты заказа"
+    /// </summary>
     [Table("OrderProducts")]
     public class OrderProduct
     {

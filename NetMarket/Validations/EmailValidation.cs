@@ -2,6 +2,9 @@
 
 namespace NetMarket.Validations
 {
+    /// <summary>
+    /// Класс проверки правильности ввода Email
+    /// </summary>
     public static class EmailValidation
     {
         public static bool IsValid(string email)
