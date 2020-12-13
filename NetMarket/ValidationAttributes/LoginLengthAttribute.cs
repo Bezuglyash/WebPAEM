@@ -2,6 +2,9 @@
 
 namespace NetMarket.ValidationAttributes
 {
+    /// <summary>
+    /// Класс валидации логина
+    /// </summary>
     public class LoginLengthAttribute : ValidationAttribute
     {
         public LoginLengthAttribute() { }

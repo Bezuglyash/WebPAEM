@@ -8,6 +8,9 @@ using NetMarket.Models;
 
 namespace NetMarket.Repository
 {
+    /// <summary>
+    /// Класс-репозиторий для работы с товарами на уровне доступа к данным
+    /// </summary>
     public class ProductRepository
     {
         private NetMarketDbContext _netMarketDbContext;
@@ -30,6 +33,20 @@ namespace NetMarket.Repository
             _cache = cache;
         }
 
+        /// <summary>
+        /// Метод добваления нового товара
+        /// </summary>
+        /// <param name="company">Компания производитель</param>
+        /// <param name="name">Название</param>
+        /// <param name="price">Цена</param>
+        /// <param name="storageCard">Карта памяти</param>
+        /// <param name="color">Цвет</param>
+        /// <param name="operationSystem">Операционная система</param>
+        /// <param name="weight">Вес</param>
+        /// <param name="description">Описание</param>
+        /// <param name="existence">Есть ли в наличии</param>
+        /// <param name="imageString">Путь к фотографии на сервере</param>
+        /// <returns></returns>
         public async Task AddProductAsync(string company, string name, int price, int storageCard, string color, string operationSystem, int weight, string description, string existence, string imageString)
         {
             _cache.Remove("products");
@@ -50,6 +67,10 @@ namespace NetMarket.Repository
             await _netMarketDbContext.SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Метод получения списка товаров
+        /// </summary>
+        /// <returns>Список товаров</returns>
         public List<Product> GetProducts()
         {
             if (!_cache.TryGetValue("products", out List<Product> list))
@@ -60,6 +81,11 @@ namespace NetMarket.Repository
             return list;
         }
 
+        /// <summary>
+        /// Метод получения товара
+        /// </summary>
+        /// <param name="id">ID товара</param>
+        /// <returns>Товар</returns>
         public Product GetProduct(int id)
         {
             return (from product in GetProducts()
@@ -67,6 +93,11 @@ namespace NetMarket.Repository
                 select product).ToList()[0];
         }
 
+        /// <summary>
+        /// Метод получения списка товаров с учётом поиска
+        /// </summary>
+        /// <param name="search">Поиск</param>
+        /// <returns>Список товаров</returns>
         public List<Product> GetSearchProducts(string search)
         {
             if (int.TryParse(search, out int price))
@@ -80,6 +111,11 @@ namespace NetMarket.Repository
                 select product).ToList();
         }
 
+        /// <summary>
+        /// Метод определяющий, есть ли товар в наличии
+        /// </summary>
+        /// <param name="id">ID товара</param>
+        /// <returns>True, если есть, иначе - false</returns>
         public bool IsHaveInStock(int id)
         {
             var product = (from prod in GetProducts()
@@ -88,6 +124,13 @@ namespace NetMarket.Repository
             return product.HaveInStock;
         }
 
+        /// <summary>
+        /// Метод обновления данных о товаре
+        /// </summary>
+        /// <param name="id">ID товара</param>
+        /// <param name="typeOfUpdate">Тип данных, которые нужно обновить (company, name, price, storageCard, color, operationSystem, weight, description, existence)</param>
+        /// <param name="data">Обновленные данные</param>
+        /// <returns></returns>
         public async Task UpdateAsync(int id, string typeOfUpdate, object data)
         {
             _cache.Remove("products");
@@ -150,6 +193,12 @@ namespace NetMarket.Repository
             return product;
         }
 
+        /// <summary>
+        /// Метод обновления пути к фотографии на сервере (изменения фотографии товара)
+        /// </summary>
+        /// <param name="id">ID товара</param>
+        /// <param name="newImageString">Новый путь</param>
+        /// <returns>Путь к прежней фотографии (для удаления из сервера)</returns>
         public async Task<string> ImageStringUpdateAsync(int id, string newImageString)
         {
             _cache.Remove("products");
@@ -161,6 +210,11 @@ namespace NetMarket.Repository
             return currentImageString;
         }
 
+        /// <summary>
+        /// Метод удаления товара
+        /// </summary>
+        /// <param name="id">ID продукта</param>
+        /// <returns></returns>
         public async Task DeleteProductAsync(int id)
         {
             _cache.Remove("products");

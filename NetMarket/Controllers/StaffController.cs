@@ -12,7 +12,10 @@ using NetMarket.ViewModels;
 using NetMarket.ViewModels.Employee;
 
 namespace NetMarket.Controllers
-{
+{   
+    /// <summary>
+    /// Контроллер, который осуществляет работу интернет-магазина со стороны персонала магазина
+    /// </summary>
     public class StaffController : Controller
     {
         private PeopleRepository _peopleRepository;
@@ -48,6 +51,12 @@ namespace NetMarket.Controllers
             return RedirectToAction("Employees");
         }
 
+        /// <summary>
+        /// Метод запроса на обновление прав доступа персонала
+        /// </summary>
+        /// <param name="id">ID пользователя</param>
+        /// <param name="rewriteRole">Новые права</param>
+        /// <returns>Статусный код</returns>
         [HttpPost]
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> UpdateRole(Guid id, string rewriteRole)
@@ -100,6 +109,12 @@ namespace NetMarket.Controllers
             return RedirectToAction("Orders");
         }
 
+        /// <summary>
+        /// Метод запроса на обновление статуса заказа
+        /// </summary>
+        /// <param name="id">ID заказа</param>
+        /// <param name="rewriteStatus">Новый статус</param>
+        /// <returns>Статусный код</returns>
         [HttpPost]
         [Authorize(Roles = "employee")]
         public async Task<IActionResult> UpdateStatus(int id, int rewriteStatus)
@@ -108,6 +123,11 @@ namespace NetMarket.Controllers
             return StatusCode(200);
         }
 
+        /// <summary>
+        /// Метод запроса о статусе заказа
+        /// </summary>
+        /// <param name="id">ID товара</param>
+        /// <returns>Статус заказа</returns>
         [HttpPost]
         [Authorize(Roles = "employee")]
         public string GetOrderStatus(int id)
@@ -202,7 +222,6 @@ namespace NetMarket.Controllers
                 {
                     await uploadImage.CopyToAsync(fileStream);
                 }
-
             }
             if (System.IO.File.Exists($"wwwroot/{pastImageString}"))
             {
@@ -211,6 +230,13 @@ namespace NetMarket.Controllers
             return RedirectToAction("Edit", id);
         }
 
+        /// <summary>
+        /// Метод запроса на обновление данных о товаре
+        /// </summary>
+        /// <param name="phoneId">ID товара</param>
+        /// <param name="typeOfData">Тип данных, в которых происходят изменения (company, name, price, storageCard, color, operationSystem, weight, description, existence)</param>
+        /// <param name="newData">Обновленные данные</param>
+        /// <returns>Статусный код</returns>
         [HttpPost]
         [Authorize(Roles = "admin, employee")]
         public async Task<IActionResult> EditData(int phoneId, string typeOfData, string newData)

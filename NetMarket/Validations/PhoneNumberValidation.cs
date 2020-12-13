@@ -2,6 +2,9 @@
 
 namespace NetMarket.Validations
 {
+    /// <summary>
+    /// Класс проверки правильности ввода номера телефона
+    /// </summary>
     public static class PhoneNumberValidation
     {
         public static bool IsValid(string phoneNumber)

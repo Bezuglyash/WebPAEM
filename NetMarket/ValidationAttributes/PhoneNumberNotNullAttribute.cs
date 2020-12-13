@@ -3,6 +3,9 @@ using System.Text.RegularExpressions;
 
 namespace NetMarket.ValidationAttributes
 {
+    /// <summary>
+    /// Класс валидации номера телефона (не может быть null)
+    /// </summary>
     public class PhoneNumberNotNullAttribute : ValidationAttribute
     {
         public PhoneNumberNotNullAttribute() { }

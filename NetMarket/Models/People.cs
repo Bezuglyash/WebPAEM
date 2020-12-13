@@ -4,6 +4,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NetMarket.Models
 {
+    /// <summary>
+    /// Модель данных "Пользователи"
+    /// </summary>
     [Table("People")]
     public class People
     {

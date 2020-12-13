@@ -12,6 +12,9 @@ using NetMarket.ViewModels;
 
 namespace NetMarket.Controllers
 {
+    /// <summary>
+    /// Контроллер, который осуществляет работу интернет-магазина со стороны клиента
+    /// </summary>
     public class MarketController : Controller
     {
         private PeopleRepository _peopleRepository;
@@ -89,6 +92,10 @@ namespace NetMarket.Controllers
             return RedirectToAction("Phone");
         }
 
+        /// <summary>
+        /// Метод запроса на количество товаров в корзине
+        /// </summary>
+        /// <returns>Количество товаров</returns>
         [HttpGet]
         public int GetCountPhonesInBasket()
         {
@@ -101,6 +108,11 @@ namespace NetMarket.Controllers
             return _productInBasketRepository.GetCountProductsInBasketForAuthorizedUser(HttpContext.User.Identity.Name);
         }
 
+        /// <summary>
+        /// Метод запроса подробной информации о товаре
+        /// </summary>
+        /// <param name="productId">ID продукта</param>
+        /// <returns>Характеристика товара в JSON формате</returns>
         [HttpPost]
         public JsonResult GetMoreDetailed(int productId)
         {
@@ -198,6 +210,10 @@ namespace NetMarket.Controllers
             return View(orderRegistrationViewModel);
         }
 
+        /// <summary>
+        /// Метод запроса данных о зарегистрированном пользователе для автозаполнения в форме оформления заказа
+        /// </summary>
+        /// <returns>Данные пользователя в JSON формате или null</returns>
         [HttpGet]
         public JsonResult GetUserData()
         {
@@ -241,6 +257,11 @@ namespace NetMarket.Controllers
             return RedirectToAction("MyOrders");
         }
 
+        /// <summary>
+        /// Метод запроса товаров заказа
+        /// </summary>
+        /// <param name="orderNumber">Номер заказа</param>
+        /// <returns>Товары в JSON формате</returns>
         [HttpPost]
         [Authorize(Roles = "user, employee")]
         public JsonResult GetProductsInOrder(int orderNumber)
@@ -248,6 +269,11 @@ namespace NetMarket.Controllers
             return Json(_orderRepository.GetProductsInOrder(orderNumber));
         }
 
+        /// <summary>
+        /// Метод запроса оплаты заказа
+        /// </summary>
+        /// <param name="orderNumber">Номер заказа</param>
+        /// <returns>Статусный код</returns>
         [HttpPost]
         [Authorize(Roles = "user")]
         public async Task<IActionResult> Payment(int orderNumber)
@@ -256,6 +282,11 @@ namespace NetMarket.Controllers
             return StatusCode(200);
         }
 
+        /// <summary>
+        /// Метод запроса на добавление товара в корзину
+        /// </summary>
+        /// <param name="productId">ID товара</param>
+        /// <returns>Статусный код</returns>
         [HttpPost]
         public async Task<IActionResult> AddToBasket(int productId)
         {
@@ -274,6 +305,11 @@ namespace NetMarket.Controllers
             return StatusCode(400);
         }
 
+        /// <summary>
+        /// Метод запроса на удаление товара из корзины
+        /// </summary>
+        /// <param name="idInBasket">ID товара в корзине</param>
+        /// <returns></returns>
         [HttpPost]
         public async Task DeleteFromBasket(int idInBasket)
         {

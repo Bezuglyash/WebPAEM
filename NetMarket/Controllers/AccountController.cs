@@ -12,6 +12,9 @@ using NetMarket.ViewModels;
 
 namespace NetMarket.Controllers
 {
+    /// <summary>
+    /// Контроллер, который осуществляет работу с аккаунтами пользователей
+    /// </summary>
     public class AccountController : Controller
     {
         private PeopleRepository _peopleRepository;
@@ -79,6 +82,11 @@ namespace NetMarket.Controllers
             return View(registerViewModel);
         }
 
+        /// <summary>
+        /// Метод, который сохраняет в куки-файл данные авторизированного пользователя
+        /// </summary>
+        /// <param name="human">Авторизированный пользователь</param>
+        /// <returns></returns>
         private async Task Authenticate(People human)
         {
             // создаем один claim
@@ -118,6 +126,12 @@ namespace NetMarket.Controllers
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id), authProperties);
         }
 
+        /// <summary>
+        /// Метод, который сохраняет в куки-файл данные авторизированного пользователя (вызывается при обновлении логина пользователя)
+        /// </summary>
+        /// <param name="login">Логин</param>
+        /// <param name="role">Права доступа</param>
+        /// <returns></returns>
         private async Task Authenticate(string login, string role)
         {
             // создаем один claim
@@ -172,6 +186,13 @@ namespace NetMarket.Controllers
             });
         }
 
+        /// <summary>
+        /// Метод принимает запрос на изменение настроек пользователя
+        /// </summary>
+        /// <param name="type">Тип данных, которые нужно обновить (login, password, email, name, surname, middleName, phoneNumber) </param>
+        /// <param name="data">Оновленные данные</param>
+        /// <param name="additionalData">Дополнительные данные (при изменении пароля нужен текущий для проверки)</param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<string> RewriteUserSettings(string type, string data, string additionalData)
         {

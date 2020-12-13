@@ -2,6 +2,9 @@
 
 namespace NetMarket.Models
 {
+    /// <summary>
+    /// Модель данных "Продукты"
+    /// </summary>
     public class Product
     {
         public int Id { get; set; }

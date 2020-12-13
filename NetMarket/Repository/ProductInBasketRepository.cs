@@ -9,6 +9,9 @@ using NetMarket.ViewModels;
 
 namespace NetMarket.Repository
 {
+    /// <summary>
+    /// Класс-репозиторий для работы с товарами в корзине на уровне доступа к данным
+    /// </summary>
     public class ProductInBasketRepository
     {
         private NetMarketDbContext _netMarketDbContext;
@@ -20,6 +23,13 @@ namespace NetMarket.Repository
             _cache = cache;
         }
 
+        /// <summary>
+        /// Метод добавления товара в корзину авторизированного пользователя
+        /// </summary>
+        /// <param name="login">Логин пользователя</param>
+        /// <param name="userId">ID пользователя</param>
+        /// <param name="productId">ID товара</param>
+        /// <returns></returns>
         public async Task AddProductInBasketForAuthorizedUserAsync(string login, Guid userId, int productId)
         {
             var productInBasket = new ProductInBasket
@@ -32,6 +42,12 @@ namespace NetMarket.Repository
             await _netMarketDbContext.SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Метод добавления товара в корзину неавторизированного пользователя
+        /// </summary>
+        /// <param name="userId">ID неавторизированного пользователя</param>
+        /// <param name="productId">ID товара</param>
+        /// <returns></returns>
         public async Task AddProductInBasketForNotAuthorizedUserAsync(Guid userId, int productId)
         {
             var productInBasket = new ProductInBasket
@@ -44,6 +60,11 @@ namespace NetMarket.Repository
             await _netMarketDbContext.SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Метод подсчёта количества товаров в корзине авторизированного пользователя
+        /// </summary>
+        /// <param name="login">Логин пользователя</param>
+        /// <returns>Количество товаров</returns>
         public int GetCountProductsInBasketForAuthorizedUser(string login)
         {
             return (from product in _netMarketDbContext.ProductsInBasket
@@ -51,6 +72,11 @@ namespace NetMarket.Repository
                 select product).ToList().Count;
         }
 
+        /// <summary>
+        /// Метод подсчёта количества товаров в корзине неавторизированного пользователя
+        /// </summary>
+        /// <param name="userId">ID неавторизированного пользователя</param>
+        /// <returns>Количество товаров</returns>
         public int GetCountProductsInBasketForNotAuthorizedUser(Guid userId)
         {
             return (from product in _netMarketDbContext.ProductsInBasket
@@ -58,6 +84,11 @@ namespace NetMarket.Repository
                 select product).ToList().Count;
         }
 
+        /// <summary>
+        /// Метод получения списка товаров в корзине авторизированного пользователя
+        /// </summary>
+        /// <param name="login">Логин пользователя</param>
+        /// <returns>Список товаров</returns>
         public List<ProductInBasketViewModel> GetProductsInCartForAuthorizedUser(string login)
         {
             return (from productInBasket in _netMarketDbContext.ProductsInBasket
@@ -72,6 +103,11 @@ namespace NetMarket.Repository
                 }).ToList();
         }
 
+        /// <summary>
+        /// Метод получения списка товаров в корзине неавторизированного пользователя
+        /// </summary>
+        /// <param name="userId">ID неавторизированного пользователя</param>
+        /// <returns>Список товаров</returns>
         public List<ProductInBasketViewModel> GetProductsInCartForNotAuthorizedUser(Guid userId)
         {
             return (from productInBasket in _netMarketDbContext.ProductsInBasket
@@ -87,6 +123,11 @@ namespace NetMarket.Repository
                 }).ToList();
         }
 
+        /// <summary>
+        /// Метод подсчитывающий сумму заказа авторизированного пользователя
+        /// </summary>
+        /// <param name="login">Логин пользователя</param>
+        /// <returns>Сумма заказа</returns>
         public int GetPriceSumProductsInCartForAuthorizedUser(string login)
         {
             if (!_cache.TryGetValue(login, out int sum))
@@ -97,6 +138,11 @@ namespace NetMarket.Repository
             return sum;
         }
 
+        /// <summary>
+        /// Метод подсчитывающий сумму заказа неавторизированного пользователя
+        /// </summary>
+        /// <param name="userId">ID неавторизированного пользователя</param>
+        /// <returns>Сумма заказа</returns>
         public int GetPriceSumProductsInCartForNotAuthorizedUser(Guid userId)
         {
             if (!_cache.TryGetValue(userId.ToString(), out int sum))
@@ -107,6 +153,11 @@ namespace NetMarket.Repository
             return sum;
         }
 
+        /// <summary>
+        /// Метод удаления товара из корзины
+        /// </summary>
+        /// <param name="id">ID корзины</param>
+        /// <returns></returns>
         public async Task DeleteProductFromCartAsync(int id)
         {
             var product = _netMarketDbContext.ProductsInBasket.Find(id);
@@ -115,6 +166,11 @@ namespace NetMarket.Repository
             await _netMarketDbContext.SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Метод удаления товаров из корзины авторизированного пользователя
+        /// </summary>
+        /// <param name="login">Логин пользователя</param>
+        /// <returns>Список ID товаров</returns>
         public async Task<List<int>> DeleteProductsInBasketForAuthorizedUserAsync(string login)
         {
             var products = (from p in _netMarketDbContext.ProductsInBasket
@@ -131,6 +187,11 @@ namespace NetMarket.Repository
             return productsId;
         }
 
+        /// <summary>
+        /// Метод удаления товаров из корзины неавторизированного пользователя
+        /// </summary>
+        /// <param name="userId">ID неавторизированного пользователя</param>
+        /// <returns>Список ID товаров</returns>
         public async Task<List<int>> DeleteProductsInBasketForNotAuthorizedUserAsync(Guid userId)
         {
             var products = (from p in _netMarketDbContext.ProductsInBasket
@@ -146,7 +207,12 @@ namespace NetMarket.Repository
             await _netMarketDbContext.SaveChangesAsync();
             return productsId;
         }
-
+        
+        /// <summary>
+        /// Метод удаления товара из корзины, которого нет в наличии
+        /// </summary>
+        /// <param name="productId">ID товара</param>
+        /// <returns></returns>
         public async Task DeleteAllProductsThatAreOutOfStockAsync(int productId)
         {
             var products = (from p in _netMarketDbContext.ProductsInBasket

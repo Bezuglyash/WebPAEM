@@ -10,6 +10,9 @@ using NetMarket.ViewModels.Employee;
 
 namespace NetMarket.Repository
 {
+    /// <summary>
+    /// Класс-репозиторий для работы с пользователями на уровне доступа к данным
+    /// </summary>
     public class PeopleRepository
     {
         private NetMarketDbContext _netMarketDbContext;
@@ -40,6 +43,12 @@ namespace NetMarket.Repository
             return list;
         }
 
+        /// <summary>
+        /// Метод проверки логина и пароля для идентификации
+        /// </summary>
+        /// <param name="login">Логин пользователя</param>
+        /// <param name="password">Пароль пользователя</param>
+        /// <returns>При успешной проверки - данные пользователя, в потивном случае - null</returns>
         public People CheckData(string login, string password)
         {
             var usersForThisParameters = (from human in GetPeople()
@@ -48,6 +57,17 @@ namespace NetMarket.Repository
             return usersForThisParameters.Count == 0 ? null : usersForThisParameters[0];
         }
 
+        /// <summary>
+        /// Метод добваления нового пользователя
+        /// </summary>
+        /// <param name="login">Логин</param>
+        /// <param name="email">Email</param>
+        /// <param name="password">Пароль</param>
+        /// <param name="name">Имя</param>
+        /// <param name="surname">Фамилия</param>
+        /// <param name="middleName">Отчество</param>
+        /// <param name="numberPhone">Номер телефона</param>
+        /// <param name="roleId">ID права доступа</param>
         public void AddHuman(string login, string email, string password, string name, string surname, string middleName, string numberPhone, int roleId)
         {
             _cache.Remove("people");
@@ -64,6 +84,12 @@ namespace NetMarket.Repository
             _netMarketDbContext.SaveChanges();
         }
 
+        /// <summary>
+        /// Метод проверки на уникальность логина и email
+        /// </summary>
+        /// <param name="login">Логин</param>
+        /// <param name="email">Email</param>
+        /// <returns>True, если данные уникальны, иначе - false</returns>
         public bool IsUniqueLogin(string login , string email)
         {
             if (_netMarketDbContext.People.Any())
@@ -77,6 +103,11 @@ namespace NetMarket.Repository
             return true;
         }
 
+        /// <summary>
+        /// Метод получения ID пользователя
+        /// </summary>
+        /// <param name="login">Логин</param>
+        /// <returns>ID пользователя</returns>
         public Guid GetUserId(string login)
         {
             return (from human in GetPeople()
@@ -84,6 +115,11 @@ namespace NetMarket.Repository
                 select human).ToList()[0].Id;
         }
 
+        /// <summary>
+        /// Метод получения данных о клиенте
+        /// </summary>
+        /// <param name="login">Логин клиента</param>
+        /// <returns>Клиент</returns>
         public People GetUser(string login)
         {
             return (from human in GetPeople()
@@ -91,6 +127,10 @@ namespace NetMarket.Repository
                 select human).ToList()[0];
         }
 
+        /// <summary>
+        /// Метод получения списка персонала интернет-магазина
+        /// </summary>
+        /// <returns>Список персонала</returns>
         public List<EmployeeViewModel> GetEmployees()
         {
             return (from human in GetPeople()
@@ -107,6 +147,11 @@ namespace NetMarket.Repository
                 }).ToList();
         }
 
+        /// <summary>
+        /// Метод получения списка персонала интернет-магазина (вызывается при поиске)
+        /// </summary>
+        /// <param name="search">Поиск</param>
+        /// <returns>Список персонала</returns>
         public List<EmployeeViewModel> GetEmployees(string search)
         {
             return (from human in GetPeople()
@@ -123,6 +168,14 @@ namespace NetMarket.Repository
                 }).ToList();
         }
 
+        /// <summary>
+        /// Метод обновления данных о пользователе
+        /// </summary>
+        /// <param name="login">Логин пользователя</param>
+        /// <param name="typeOfUpdate">Тип обновления (login, password, email, name, surname, middleName, phoneNumber)</param>
+        /// <param name="data">Обновленные данные</param>
+        /// <param name="additionalData">Дополнительные данные (при изменении пароля нужен текущий для проверки)</param>
+        /// <returns>Возвращается Good, если изменения успешно сохранены, иначе - bad</returns>
         public async Task<string> UpdateAsync(string login, string typeOfUpdate, string data, string additionalData)
         {
             _cache.Remove("users");
@@ -255,6 +308,12 @@ namespace NetMarket.Repository
             return response;
         }
 
+        /// <summary>
+        /// Метод обновления прав доступа персонала
+        /// </summary>
+        /// <param name="userId">ID персонала</param>
+        /// <param name="roleId">ID новых прав доступа</param>
+        /// <returns></returns>
         public async Task EmployeeRoleUpdateAsync(Guid userId, int roleId)
         {
             _cache.Remove("people");
@@ -264,6 +323,9 @@ namespace NetMarket.Repository
             await _netMarketDbContext.SaveChangesAsync();
         }
 
+        /// <summary>
+        /// Метод очистки кеша пользователей
+        /// </summary>
         public void ClearCache()
         {
             _cache.Remove("people");
